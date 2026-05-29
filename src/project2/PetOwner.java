@@ -13,7 +13,6 @@ public class PetOwner {
     private String ownerEmail;
     
     //constructor
-    //Sebab owner mula-mula register biasanya belum ada pet lagi.
     public PetOwner(String name, String ownerID, String ownerEmail){
         this.name = name;
         this.ownerID = ownerID;

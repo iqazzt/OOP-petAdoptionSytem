@@ -87,7 +87,7 @@ public class MyPets {
         stage.setTitle("My Pets");
     }
 
-    // ── Display petlist as rows ────────────────────────
+    //---display petlist as rows
     private void displayPets() {
         content.getChildren().clear();
 
@@ -167,7 +167,7 @@ public class MyPets {
             Button editBtn   = new Button("Edit");
             Button deleteBtn = new Button("Delete");
 
-            //Delete — remove from list then rewrite file //ai prompt
+            //Delete — remove from list then rewrite file
             deleteBtn.setOnAction(e -> {
                 //show confirmation alert
                 Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
@@ -194,7 +194,7 @@ public class MyPets {
         }
     }
 
-    // ── Edit dialog fahamkan
+    // ── Edit dialog
     private void showEditDialog(Pet pet) {
         //create a new popup window
         Stage dialog = new Stage();

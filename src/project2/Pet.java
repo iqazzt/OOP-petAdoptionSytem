@@ -4,10 +4,6 @@
  */
 package project2;
 
-/**
- *
- * @author AFIQAH
- */
 public class Pet {
     private String petID;
     private String name;
@@ -19,7 +15,6 @@ public class Pet {
     private String adoptionStatus;
     private String ownerID;
 
-    // Parameterized Constructor
     public Pet(String petID, String name, String species, String breed,
                int age, String gender, String healthStatus, String adoptionStatus, String ownerID) {
         this.petID = petID;

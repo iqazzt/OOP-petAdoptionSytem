@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class FileHandler {
     
-    // Append one new pet used by AddPet
+    // Append one new pet
     public static void savePet(Pet pet) {
         try (FileWriter fw = new FileWriter("pets.txt", true)) {
             fw.write(
@@ -31,7 +31,7 @@ public class FileHandler {
         }
     }
 
-    // Overwrite entire file used by MyPets after edit or delete
+    // Overwrite entire file
     public static void saveAllPets(ArrayList<Pet> petlist) {
         try (FileWriter fw = new FileWriter("pets.txt", false)) {
             for (Pet pet : petlist) {

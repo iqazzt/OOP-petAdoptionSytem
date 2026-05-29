@@ -139,8 +139,8 @@ public class AddPet{
                 messageLbl.setText("Please fill in all fields.");
                 messageLbl.setVisible(true);
                 return;
-            } //ai prompt
-    
+            } 
+            
             try{
                 Pet pet = new Pet(
                     petTf.getText(),
