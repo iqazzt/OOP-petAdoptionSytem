@@ -1,14 +1,20 @@
-## Notes
+File Structure:
 
-For this project, my main responsibility is the `PetOwner` class.
+src/project2/
+├── FileHandler.java        ← all file I/O here
+├── Pet.java
+├── PetOwner.java
+├── test.java
+├── login_register_page.java
+├── HomePageVisitor.java
+├── HomePage.java
+├── AddPet.java
+├── MyPets.java
+├── NewApplication.java
+├── ApplicationHistory.java
+└── ManageApplication.java
 
-Files related to the PetOwner functionality include:
-
-* `PetOwner.java`
-* `AddPet.java`
-* `MyPets.java`
-* `FileHandler.java`
-
-`test.java` was added only as the main class to run and test the application since it contains the `main` method.
-
-`HomePage.java` was included only for testing and navigation purposes during development to ensure the PetOwner features could be accessed and tested properly. It is not part of my assigned responsibility.
+How to run:
+1. Open project in NetBeans
+2. Run login_register_page.java
+3. Ensure owners.txt and pets.txt exist
