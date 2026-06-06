@@ -1,17 +1,24 @@
-package OOPProject;
+package project2;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-public class ApplicationHistory extends Application {
+public class ApplicationHistory {
+
+    private Stage stage;
+    private PetOwner currentOwner;
+
+    //--- constructor for integration (opened from navbar) ---
+    public ApplicationHistory(PetOwner currentOwner) {
+        this.currentOwner = currentOwner;
+        this.stage = new Stage();
+    }
 
     //--- ApplicationRecord saves data from each application ---
     public static class ApplicationRecord {
@@ -74,29 +81,40 @@ public class ApplicationHistory extends Application {
         }
     }
 
-    @Override// Override the start method in the Application class
-    public void start(Stage primaryStage) {
+    //--- build and show the Application History screen ---
+    public void show() {
+        Stage primaryStage = this.stage;
+        
+        HBox navBar = new HBox(25);
+        navBar.setPadding(new Insets(25, 40, 25, 40));
+        navBar.setAlignment(Pos.CENTER_LEFT);
+        navBar.setStyle("-fx-background-color: #FFFFFF;");
 
         Label webname = new Label("FurEver Friends");
-        webname.setStyle("-fx-font-weight: bold;");
+        webname.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         
-        //--- navigation bar buttons as demo ---
-        Button homeBtn = new Button("Home");
-        Button myPetBtn = new Button("My Pet");
-        Button newAppBtn = new Button("New Application");
-        Button historyBtn = new Button("Application History");
-        Button manageBtn = new Button("Manage Application");
-        Button profileBtn = new Button("Profile");
-        
-        //--- highlight current page : Application History---
-        historyBtn.setStyle("-fx-background-color: black; -fx-text-fill: white;");
-        
+        //--- navigation bar ---
         Region navSpacer = new Region();
         HBox.setHgrow(navSpacer, Priority.ALWAYS);
 
-        HBox navBar = new HBox(15, webname, navSpacer, homeBtn, myPetBtn, newAppBtn, historyBtn, manageBtn, profileBtn);
-        navBar.setPadding(new Insets(15));
-        navBar.setAlignment(Pos.CENTER_LEFT);
+        Hyperlink homeBtn = new Hyperlink("Home");
+        Hyperlink myPetBtn = new Hyperlink("My Pet");
+        Hyperlink newAppBtn = new Hyperlink("New Application");
+        Hyperlink historyBtn = new Hyperlink("Application History");
+        Hyperlink manageBtn = new Hyperlink("Manage Application");
+
+        //--- menu links ---
+        String linkStyle = "-fx-text-fill: #000000;" + "-fx-underline: false;" + 
+                           "-fx-font-size: 14px;";
+
+        homeBtn.setStyle(linkStyle);
+        myPetBtn.setStyle(linkStyle);
+        newAppBtn.setStyle(linkStyle);
+        historyBtn.setStyle(linkStyle);
+        manageBtn.setStyle(linkStyle);
+        
+        navBar.getChildren().addAll(webname, navSpacer, homeBtn, myPetBtn,newAppBtn,
+                                    historyBtn, manageBtn);
         
         //--- title ---
         Label title = new Label("Application History");
@@ -108,25 +126,15 @@ public class ApplicationHistory extends Application {
         //--- all remaining rows besides header ---
         VBox tableRows = new VBox(0);
 
-        //--- load data from applications.txt ---
-        try (BufferedReader br = new BufferedReader(new FileReader("applications.txt"))) {
-            
-            String line;
-            //--- read file line by line ---
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split("\\|"); //split each data with |
-                
-                if (parts.length >= 8) {
-                    //--- create one table row using the data ---
-                    HBox row = createRow(parts);
-                    //--- add row into the table ---
-                    tableRows.getChildren().add(row);
-                }
+        //--- load data from applications.txt (only show this user's applications) ---
+        for (String[] parts : FileHandler.loadApplications()) {
+            // parts[1] = applicantId (only show rows submitted by the logged-in user) ---
+            if (parts[1].equals(currentOwner.getOwnerID())) {
+                HBox row = createRow(parts);
+                tableRows.getChildren().add(row);
             }
-
-        } catch (Exception ex) {
-            System.out.println("Message: " + ex);
         }
+
         //--- combine table header and rows into one table box ---
         VBox tableBox = new VBox(0, tableHeader, tableRows);
         tableBox.setStyle("-fx-border-color: #cccccc;" + "-fx-border-width: 1;" +
@@ -140,18 +148,37 @@ public class ApplicationHistory extends Application {
         BorderPane root = new BorderPane();
         root.setTop(navBar);
         root.setCenter(centerBox);
-        root.setStyle("-fx-background-color: #f5f5f5;");
-        
-        Scene scene = new Scene(root, 900, 600);
+        root.setStyle("-fx-background-color: white;");
+     
+        Scene scene = new Scene(root, 1000, 600);
 
-        primaryStage.setTitle("Application History");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        stage.setTitle("Application History");
+        stage.setScene(scene);
+        stage.show();
+        
+        //--- navbar actions ---
+        homeBtn.setOnAction(ex -> {
+            new HomePage(currentOwner).show();
+            stage.close();
+        });
+        myPetBtn.setOnAction(ex -> {
+            new MyPets(currentOwner).show();
+            stage.close();
+        });
+        newAppBtn.setOnAction(ex -> {
+            new NewApplication(currentOwner).show();
+            stage.close();
+        });
+        manageBtn.setOnAction(ex -> {
+            new ManageApplication(currentOwner).show();
+            stage.close();
+        });
+        
     }
     
     //--- create horizontal box for table header ---
     private HBox createHeader() {
-        String headerStyle = "-fx-font-weight: bold; -fx-font-size: 13px;";
+        String headerStyle = "-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;";
 
         Label applicationIdHeader = new Label("Application ID");
         applicationIdHeader.setStyle(headerStyle);
@@ -172,7 +199,7 @@ public class ApplicationHistory extends Application {
         //--- combine all labels into one header row ---
         HBox header = new HBox(20, applicationIdHeader, dateHeader, statusHeader, commentHeader);
         header.setPadding(new Insets(12, 10, 12, 10));
-        header.setStyle("-fx-background-color: #eeeeee;");
+        header.setStyle("-fx-background-color: #FBC473;");
 
         return header;
     }
@@ -211,7 +238,4 @@ public class ApplicationHistory extends Application {
         return row;
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }
