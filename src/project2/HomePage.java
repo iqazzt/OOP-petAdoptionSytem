@@ -21,153 +21,352 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class HomePage {
+
     private Stage stage;
     private PetOwner currentOwner;
 
     public HomePage(PetOwner currentOwner) {
+
         this.currentOwner = currentOwner;
         stage = new Stage();
 
         BorderPane layout = new BorderPane();
+        layout.setStyle("-fx-background-color: #F8F8F8;");
 
-        // ── Navigation bar ────────────────────────────────────────
-        HBox navbar = new HBox();
-        navbar.setSpacing(20);
-        navbar.setPadding(new Insets(10));
-        navbar.setAlignment(Pos.TOP_RIGHT);
 
-        Label homeLbl      = new Label("Home");
-        Label myPetLbl     = new Label("My Pet");
-        Label newAppLbl    = new Label("New Application");
-        Label appHistLbl   = new Label("Application History");
-        Label manageAppLbl = new Label("Manage Application");
+        BorderPane navbar = new BorderPane();
 
-        navbar.getChildren().addAll(homeLbl, myPetLbl, newAppLbl, appHistLbl, manageAppLbl);
+        navbar.setPadding(new Insets(15, 25, 15, 25));
+
+        navbar.setStyle(
+                "-fx-background-color: white;" +
+                "-fx-border-color: #E5E5E5;" +
+                "-fx-border-width: 0 0 1 0;"
+        );
+
+        Label systemLbl = new Label("FurEver Friends");
+
+        systemLbl.setFont(
+                Font.font(
+                        "Arial",
+                        FontWeight.BOLD,
+                        18
+                )
+        );
+
+        navbar.setLeft(systemLbl);
+
+        HBox menuBox = new HBox(10);
+        menuBox.setAlignment(Pos.CENTER_RIGHT);
+
+        Button homeBtn = createNavButton("Home");
+        Button myPetBtn = createNavButton("My Pet");
+        Button newAppBtn = createNavButton("New Application");
+        Button appHistBtn = createNavButton("Application History");
+        Button manageAppBtn = createNavButton("Manage Application");
+
+        menuBox.getChildren().addAll(
+                homeBtn,
+                myPetBtn,
+                newAppBtn,
+                appHistBtn,
+                manageAppBtn
+        );
+
+        navbar.setRight(menuBox);
+
         layout.setTop(navbar);
 
-        // ── Page heading ──────────────────────────────────────────
-        Label heading = new Label("List of Pets");
-        heading.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
-        heading.setPadding(new Insets(15, 15, 5, 15));
 
-        // ── Pet listing ───────────────────────────────────────────
-        FlowPane petGrid = new FlowPane();
-        petGrid.setHgap(15);
-        petGrid.setVgap(15);
-        petGrid.setPadding(new Insets(15));
-
-        // Load all pets then exclude pets owned by the logged-in user
-        // A user cannot adopt their own pets
         ArrayList<Pet> allPets = FileHandler.loadPets();
         ArrayList<Pet> othersPets = new ArrayList<>();
+
         for (Pet pet : allPets) {
+
             if (!pet.getOwnerID().equals(currentOwner.getOwnerID())) {
                 othersPets.add(pet);
             }
         }
 
-if (othersPets.isEmpty()) {
-    Label emptyLbl = new Label("No pets available at the moment.");
-    emptyLbl.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
-    petGrid.getChildren().add(emptyLbl);
-} else {
-    for (Pet pet : othersPets) {
-        VBox card = buildPetCard(pet);
-        petGrid.getChildren().add(card);
-    }
-}
+        Label heading =
+                new Label("🐾 Pets Available For Adoption");
 
-        VBox centerBox = new VBox(5);
-        centerBox.setPadding(new Insets(10));
+        heading.setFont(
+                Font.font(
+                        "Arial",
+                        FontWeight.BOLD,
+                        28
+                )
+        );
+
+        Label totalLbl =
+                new Label("Total Available Pets : "
+                        + othersPets.size());
+
+        totalLbl.setStyle(
+                "-fx-text-fill: #666666;" +
+                "-fx-font-size: 13px;"
+        );
+
+
+        FlowPane petGrid = new FlowPane();
+
+        petGrid.setAlignment(Pos.TOP_CENTER);
+        petGrid.setHgap(25);
+        petGrid.setVgap(25);
+        petGrid.setPadding(new Insets(25));
+
+        if (othersPets.isEmpty()) {
+
+            Label emptyLbl =
+                    new Label(
+                            "No pets available at the moment."
+                    );
+
+            emptyLbl.setStyle(
+                    "-fx-text-fill: gray;" +
+                    "-fx-font-size: 14px;"
+            );
+
+            petGrid.getChildren().add(emptyLbl);
+
+        } else {
+
+            for (Pet pet : othersPets) {
+
+                VBox card = buildPetCard(pet);
+
+                petGrid.getChildren().add(card);
+            }
+        }
+
+        VBox centerBox = new VBox(10);
+
+        centerBox.setPadding(new Insets(15));
 
         centerBox.getChildren().addAll(
-            heading,
-            new Separator(),
-            petGrid
+                heading,
+                totalLbl,
+                new Separator(),
+                petGrid
         );
 
         layout.setCenter(centerBox);
 
-        // ── Add Pet button (bottom right) ─────────────────────────
-        Button addpetBtn = new Button("Add Pet");
+
+        Button addPetBtn =
+                new Button("➕ Add Pet");
+
+        addPetBtn.setStyle(
+                "-fx-background-color: #28A745;" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 8;"
+        );
+
+        addPetBtn.setPrefWidth(130);
+        addPetBtn.setPrefHeight(35);
+
         HBox bottom = new HBox();
+
         bottom.setAlignment(Pos.BOTTOM_RIGHT);
-        bottom.setPadding(new Insets(10));
-        bottom.getChildren().add(addpetBtn);
+        bottom.setPadding(new Insets(15));
+
+        bottom.getChildren().add(addPetBtn);
+
         layout.setBottom(bottom);
 
-        // ── Button and label actions ──────────────────────────────
-        addpetBtn.setOnAction(e -> {
+
+        addPetBtn.setOnAction(e -> {
             new AddPet(currentOwner).show();
             stage.close();
         });
 
-        myPetLbl.setOnMouseClicked(e -> {
+        homeBtn.setOnAction(e -> {
+            new HomePage(currentOwner).show();
+            stage.close();
+        });
+
+        myPetBtn.setOnAction(e -> {
             new MyPets(currentOwner).show();
             stage.close();
         });
 
-        newAppLbl.setOnMouseClicked(e -> {
+        newAppBtn.setOnAction(e -> {
             new NewApplication(currentOwner).show();
             stage.close();
         });
 
-        appHistLbl.setOnMouseClicked(e -> {
+        appHistBtn.setOnAction(e -> {
             new ApplicationHistory(currentOwner).show();
             stage.close();
         });
 
-        manageAppLbl.setOnMouseClicked(e -> {
+        manageAppBtn.setOnAction(e -> {
             new ManageApplication(currentOwner).show();
             stage.close();
         });
 
-        Scene scene = new Scene(layout, 900, 600);
+        Scene scene =
+                new Scene(layout, 1100, 700);
+
         stage.setScene(scene);
-        stage.setTitle("FurEver Friends – Home");
+        stage.setTitle("FurEver Friends - Home");
     }
 
     public void show() {
         stage.show();
     }
 
-    // ── Build one pet card ────────────────────────────────────────
+    private Button createNavButton(String text) {
+
+        Button btn = new Button(text);
+
+        btn.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-text-fill: #444444;" +
+                "-fx-font-size: 13px;" +
+                "-fx-cursor: hand;"
+        );
+
+        btn.setOnMouseEntered(e ->
+                btn.setStyle(
+                        "-fx-background-color: #FF69B4;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-cursor: hand;"
+                )
+        );
+
+        btn.setOnMouseExited(e ->
+                btn.setStyle(
+                        "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #444444;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-cursor: hand;"
+                )
+        );
+
+        return btn;
+    }
+
     private VBox buildPetCard(Pet pet) {
-        VBox card = new VBox(6);
-        card.setPadding(new Insets(12));
-        card.setPrefWidth(200);
+
+        VBox card = new VBox(8);
+
+        card.setPadding(new Insets(15));
+        card.setPrefWidth(260);
+
         card.setStyle(
-            "-fx-border-color: #cccccc; " +
-            "-fx-border-radius: 8; " +
-            "-fx-background-color: #ffffff; " +
-            "-fx-background-radius: 8;"
+                "-fx-background-color: white;" +
+                "-fx-background-radius: 12;" +
+                "-fx-border-radius: 12;" +
+                "-fx-border-color: #DDDDDD;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8,0,0,2);"
         );
 
-        // Pet name as card title
-        Label nameLbl = new Label(pet.getName());
-        nameLbl.setFont(Font.font("Tahoma", FontWeight.BOLD, 14));
+        String emoji = "🐾";
 
-        // Key details
-        Label speciesLbl = new Label("Species : " + pet.getSpecies());
-        Label breedLbl   = new Label("Breed   : " + pet.getBreed());
-        Label ageLbl     = new Label("Age     : " + pet.getAge() + " year(s)");
-        Label genderLbl  = new Label("Gender  : " + pet.getGender());
-        Label statusLbl  = new Label("Status  : " + pet.getAdoptionStatus());
-        statusLbl.setStyle(
-            pet.getAdoptionStatus().equalsIgnoreCase("available")
-                ? "-fx-text-fill: green; -fx-font-weight: bold;"
-                : "-fx-text-fill: gray;"
+        switch (pet.getSpecies().toLowerCase()) {
+
+            case "cat":
+                emoji = "🐱";
+                break;
+
+            case "dog":
+                emoji = "🐶";
+                break;
+
+            case "hamster":
+                emoji = "🐹";
+                break;
+
+            case "rabbit":
+                emoji = "🐰";
+                break;
+
+            case "bird":
+                emoji = "🐦";
+                break;
+
+            case "fish":
+                emoji = "🐠";
+                break;
+        }
+
+        Label nameLbl =
+                new Label(emoji + " " + pet.getName());
+
+        nameLbl.setFont(
+                Font.font(
+                        "Arial",
+                        FontWeight.BOLD,
+                        18
+                )
         );
 
-        // View Pet button — opens PetProfile with this pet
-        Button viewBtn = new Button("View Pet");
-        viewBtn.setPrefWidth(176);
-        viewBtn.setStyle("-fx-background-color: black; -fx-text-fill: white; -fx-cursor: hand;");
+        Label speciesLbl =
+                new Label("Species : " + pet.getSpecies());
+
+        Label breedLbl =
+                new Label("Breed : " + pet.getBreed());
+
+        Label ageLbl =
+                new Label("Age : "
+                        + pet.getAge()
+                        + " year(s)");
+
+        Label genderLbl =
+                new Label("Gender : "
+                        + pet.getGender());
+
+        Label statusLbl =
+                new Label("Status : "
+                        + pet.getAdoptionStatus());
+
+        if (pet.getAdoptionStatus()
+                .equalsIgnoreCase("available")) {
+
+            statusLbl.setStyle(
+                    "-fx-text-fill: green;" +
+                    "-fx-font-weight: bold;"
+            );
+
+        } else {
+
+            statusLbl.setStyle(
+                    "-fx-text-fill: gray;" +
+                    "-fx-font-weight: bold;"
+            );
+        }
+
+        Button viewBtn =
+                new Button("View Pet");
+
+        viewBtn.setPrefWidth(220);
+
+        viewBtn.setStyle(
+                "-fx-background-color: black;" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 5;"
+        );
+
         viewBtn.setOnAction(e -> {
             new PetProfile(pet, currentOwner).show();
         });
 
-        card.getChildren().addAll(nameLbl, speciesLbl, breedLbl, ageLbl, genderLbl, statusLbl, viewBtn);
+        card.getChildren().addAll(
+                nameLbl,
+                speciesLbl,
+                breedLbl,
+                ageLbl,
+                genderLbl,
+                statusLbl,
+                viewBtn
+        );
+
         return card;
     }
 }
