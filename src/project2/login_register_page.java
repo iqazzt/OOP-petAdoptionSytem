@@ -107,23 +107,23 @@ public class login_register_page {
         // login interaction (change to register screen)
         registerLink.setOnAction(e -> window.setScene(registerScene));
         
-        // Error label — shown below the login button on failure
+        // Error label: shown below the login button on failure
         Label loginErrorLbl = new Label();
         loginErrorLbl.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
         loginForm.getChildren().add(loginErrorLbl);
 
-        // Login button — validate against owners.txt, then open HomePage
+        // login button: validate against owners.txt, then open home
         loginBtn.setOnAction(e -> {
             String uId   = idField.getText().trim();
             String uPass = passField.getText().trim();
 
-            if (uId.isEmpty() || uPass.isEmpty()) {
+            if (uId.isEmpty() || uPass.isEmpty()) { // if username atau pass empty, error
                 loginErrorLbl.setText("Please enter your User ID and Password.");
                 return;
             }
 
-            // Read owners.txt to find matching user
-            // Format: ownerID,name,email,password
+            // read owners.txt to find matching user
+            // format: ownerID,name,email,password
             PetOwner matchedOwner = null;
             try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("owners.txt"))) {
                 String line;
@@ -159,7 +159,7 @@ public class login_register_page {
         VBox registerForm = new VBox(15);
         registerForm.setAlignment(Pos.CENTER);
         registerForm.setMaxWidth(450);
-        registerForm.setStyle("-fx-background-color: rgba(220, 220, 220, 0.85); -fx-background-radius: 10px; -fx-padding: 30px;");
+        registerForm.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 10px; -fx-padding: 30px;");
         
         Label titleLabel = new Label("Create an account");
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 28));
@@ -202,14 +202,14 @@ public class login_register_page {
         Button submitBtn = new Button("Submit");
         submitBtn.setPrefWidth(120);
         submitBtn.setPrefHeight(35);
-        submitBtn.setStyle("-fx-background-color: black; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5px; -fx-cursor: hand;");
+        submitBtn.setStyle("-fx-background-color: #FBC473; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5px; -fx-cursor: hand;");
         
         registerForm.getChildren().addAll(titleLabel, regIdBox, emailBox, regPassBox, welcomeLabel, submitBtn);
         
-        // use stackpane for background pic
+        // use stackpane for background 
         StackPane centerContent = new StackPane();
         centerContent.setPadding(new Insets(50, 0, 50, 0));
-        centerContent.setStyle("-fx-background-color: #A0A0A0;"); 
+        centerContent.setStyle("-fx-background-color: #FFFFFF;"); 
         centerContent.getChildren().add(registerForm);
         
         // layout
@@ -219,25 +219,25 @@ public class login_register_page {
         
         registerScene = new Scene(mainLayout, 850, 750);
         
-        // Error/success label shown under the submit button
+        // error/success label shown under the submit button
         Label regMessageLbl = new Label();
         regMessageLbl.setStyle("-fx-font-size: 12px;");
         registerForm.getChildren().add(regMessageLbl);
 
-        // Register interaction — validate then save to owners.txt
+        // Register interaction, validate then save to owners.txt
         submitBtn.setOnAction(e -> {
             String regId    = regIdField.getText().trim();
             String email    = emailField.getText().trim();
             String password = regPassField.getText().trim();
 
-            // Basic validation
+            // basic validation
             if (regId.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 regMessageLbl.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
                 regMessageLbl.setText("Please fill in all fields.");
                 return;
             }
 
-            // Check if ID is already taken (read owners.txt)
+            // check if ID is already taken (read owners.txt)
             try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("owners.txt"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -249,20 +249,19 @@ public class login_register_page {
                     }
                 }
             } catch (java.io.IOException ex) {
-                // owners.txt doesn't exist yet — that's fine, we'll create it on save
+                // owners.txt doesn't exist yet 
             }
 
-            // Save new owner: ownerID,name,email,password
-            // Using the User ID as both the ID and display name since the form only asks for ID
+            // save new owner: ownerID,name,email,password
+            // using the userID as both the ID and display name since the form only asks for ID
             PetOwner newOwner = new PetOwner(regId, regId, email);
             FileHandler.saveOwner(newOwner, password); // saves to owners.txt
             
             regMessageLbl.setStyle("-fx-text-fill: green; -fx-font-size: 12px;");
             regMessageLbl.setText("Account created! You can now log in.");
 
-            // Go back to login after a short moment
-            javafx.animation.PauseTransition pause =
-            new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1.5));
+            // go back to login after a short moment
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1.5));
 
             pause.setOnFinished(ev -> {
                 window.setScene(loginScene);
@@ -284,17 +283,7 @@ public class login_register_page {
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        Hyperlink lnkHome = new Hyperlink("Home");
-        Hyperlink lnkFaq = new Hyperlink("FAQs");
-        Hyperlink lnkContact = new Hyperlink("Contact Us");
         
-        // menu links
-        String linkStyle = "-fx-text-fill: #000000; -fx-underline: false; -fx-font-size: 14px;";
-        lnkHome.setStyle(linkStyle);
-        lnkFaq.setStyle(linkStyle);
-        lnkContact.setStyle(linkStyle);
-
         Button btnBack = new Button("BACK");
         btnBack.setPrefWidth(80);
         btnBack.setPrefHeight(30);
@@ -303,10 +292,17 @@ public class login_register_page {
         btnBack.setOnAction(e -> {
             if (window.getScene() == registerScene) {
                 window.setScene(loginScene);
+            } else {
+                HomePageVisitor homePage = new HomePageVisitor();
+                try {
+                    homePage.start(window);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
-        header.getChildren().addAll(logo, spacer, lnkHome, lnkFaq, lnkContact, btnBack);
+        header.getChildren().addAll(logo, spacer, btnBack);
         return header;
     }
     
@@ -331,7 +327,7 @@ public class login_register_page {
         grid.add(new Label("Terms"), 1, 0);
         grid.add(new Label("Address"), 2, 0);
         
-        // temporary content - will change once decidedd
+        // temporary content - will change once decided
         for(int i=0; i<3; i++) {
             for(int j=1; j<=2; j++) {
                 Label pageLbl = new Label("Page");
@@ -342,7 +338,7 @@ public class login_register_page {
         
         topFooter.getChildren().addAll(footerLogo, spacer, grid);
         
-        Label socialMockup = new Label("🌐  🔗  📺  📸 (Social Media Icons)");
+        Label socialMockup = new Label("🌐  🔗  📺  📸");
         socialMockup.setStyle("-fx-text-fill: #888888; -fx-font-size: 12px;");
 
         footerContainer.getChildren().addAll(topFooter, socialMockup);
