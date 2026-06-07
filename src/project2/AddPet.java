@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -20,9 +21,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class AddPet{
+    
+    //---fields
     private Stage stage;
     private PetOwner currentOwner;
     
+    //---constructor
     public AddPet(PetOwner currentOwner) {
         this.currentOwner = currentOwner;
         stage = new Stage();
@@ -30,22 +34,69 @@ public class AddPet{
         BorderPane layout = new BorderPane();
         VBox content = new VBox(20);
         
-         //---Navigation bar
+        //---navigation bar
         HBox navbar = new HBox();
-        navbar.setSpacing(20);
-        navbar.setPadding(new Insets(10));
-        navbar.setAlignment(Pos.CENTER_RIGHT);
-        navbar.setMinHeight(40);
-
+        navbar.setPadding(new Insets(25, 40, 25, 40));
+        navbar.setAlignment(Pos.CENTER_LEFT);
+        
+        //left side
+        Label webname = new Label("FurEver Friends");
+        webname.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        
+        HBox left = new HBox(webname);
+        left.setAlignment(Pos.CENTER_LEFT);
+        
+        //right side (menu)
         Label homeLbl = new Label("Home");
         Label myPetLbl = new Label("My Pet");
         Label newAppLbl = new Label("New Application");
         Label appHistLbl = new Label("Application History");
         Label manageAppLbl = new Label("Manage Application");
-
-        navbar.getChildren().addAll(homeLbl, myPetLbl, newAppLbl, appHistLbl, manageAppLbl);
+        
+        String labelstyle = "-fx-text-fill: #000000;" + "-fx-underline: false;" + 
+                           "-fx-font-size: 14px;" + "-fx-cursor: hand;";
+        
+        homeLbl.setStyle(labelstyle);
+        myPetLbl.setStyle(labelstyle);
+        newAppLbl.setStyle(labelstyle);
+        appHistLbl.setStyle(labelstyle);
+        manageAppLbl.setStyle(labelstyle);
+        
+        HBox right = new HBox(25, homeLbl, myPetLbl, newAppLbl, appHistLbl, manageAppLbl);
+        right.setAlignment(Pos.CENTER_RIGHT);
+        
+        navbar.getChildren().addAll(left, right);
+        HBox.setHgrow(right, Priority.ALWAYS);
         layout.setTop(navbar);
       
+        //---navigation events
+        homeLbl.setOnMouseClicked(e -> {
+            new HomePage(currentOwner).show();
+            stage.close();
+        });
+        
+        myPetLbl.setOnMouseClicked(e -> {
+            new MyPets(currentOwner).show();
+            stage.close();
+        });
+        
+
+        newAppLbl.setOnMouseClicked(e -> {
+            new NewApplication(currentOwner).show();
+            stage.close();
+        });
+
+        appHistLbl.setOnMouseClicked(e -> {
+            new ApplicationHistory(currentOwner).show();
+            stage.close();
+        });
+
+        manageAppLbl.setOnMouseClicked(e -> {
+            new ManageApplication(currentOwner).show();
+            stage.close();
+        });
+        
+        //---content area
         Text title = new Text("Add Pet Application");
         title.setFont(Font.font("Tahoma", FontWeight.BOLD, 40));
         
@@ -58,8 +109,7 @@ public class AddPet{
         row.setAlignment(Pos.CENTER);
         row.setPadding(new Insets(30));
         
-        
-        //---Form
+        //---form
         VBox petInfo = new VBox(15);
         
         //each row
@@ -121,8 +171,7 @@ public class AddPet{
         row8.getChildren().addAll(adoptStatus, adoptCb);
         adoptStatus.setMinWidth(120);
         
-     
-        //---Submit Button
+        //---submit button
         Button submitBtn = new Button("Submit");
         HBox row11 = new HBox(10);
         row11.getChildren().add(submitBtn);
@@ -132,7 +181,7 @@ public class AddPet{
         
         submitBtn.setOnAction(e -> {
             
-            // Validate — make sure nothing is empty
+            //---validate (make sure nothing is empty)
             if (petTf.getText().isBlank() || petNametf.getText().isBlank() || speciesTf.getText().isBlank() || breedTf.getText().isBlank() || ageTf.getText().isBlank() ||
                     healthStatusTf.getText().isBlank() || genderCb.getValue() == null || adoptCb.getValue() == null ) {
                 
@@ -177,43 +226,8 @@ public class AddPet{
         card.getChildren().addAll(topRow, content);
         layout.setCenter(card);
         
-        //---Back label
-        Label back = new Label("← Back to Home");
-        back.setPadding(new Insets(20));
-        layout.setBottom(back);
-        back.setOnMouseClicked(e -> {
-            new HomePage(currentOwner).show();
-            stage.close();
-        });
-        
-        homeLbl.setOnMouseClicked(e -> {
-            new HomePage(currentOwner).show();
-            stage.close();
-        });
-        
-        myPetLbl.setOnMouseClicked(e -> {
-            new MyPets(currentOwner).show();
-            stage.close();
-        });
-        
-
-        newAppLbl.setOnMouseClicked(e -> {
-            new NewApplication(currentOwner).show();
-            stage.close();
-        });
-
-        appHistLbl.setOnMouseClicked(e -> {
-            new ApplicationHistory(currentOwner).show();
-            stage.close();
-        });
-
-        manageAppLbl.setOnMouseClicked(e -> {
-            new ManageApplication(currentOwner).show();
-            stage.close();
-        });
-        
-        //----style
-        layout.setStyle("-fx-background-color: #f0f4f8;");
+        //----styles
+        layout.setStyle("-fx-background-color: white;");
         
         petInfo.setStyle(
             "-fx-background-color: #f9f9f9;" +
@@ -222,12 +236,6 @@ public class AddPet{
             "-fx-background-radius: 8;" +
             "-fx-padding: 20;"
         );
-        
-        homeLbl.setStyle("-fx-text-fill: black; -fx-cursor: hand;");
-        myPetLbl.setStyle("-fx-text-fill: black; -fx-cursor: hand;");
-        newAppLbl.setStyle("-fx-text-fill: black; -fx-cursor: hand;");
-        appHistLbl.setStyle("-fx-text-fill: black; -fx-cursor: hand;");
-        manageAppLbl.setStyle("-fx-text-fill: black; -fx-cursor: hand;");
         
         submitBtn.setStyle(
             "-fx-background-color: #2c3e50;" +
@@ -238,10 +246,8 @@ public class AddPet{
             "-fx-cursor: hand;"
         );
  
-        back.setStyle("-fx-text-fill: #555; -fx-cursor: hand; -fx-font-style: italic;");
-        messageLbl.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 12;");
-
-        Scene scene = new Scene(layout, 700, 600);
+        //---scene
+        Scene scene = new Scene(layout, 1000, 600);
         stage.setScene(scene);
         stage.setTitle("AddPet");
     }
