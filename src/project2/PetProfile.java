@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package project2;
 
 import javafx.geometry.Insets;
@@ -81,7 +78,7 @@ public class PetProfile {
         VBox content = new VBox(20, grid); 
         content.setAlignment(Pos.CENTER);
 
-        VBox buttons = new VBox(12, adopt, back); // spacing butang lebih natural
+        VBox buttons = new VBox(12, adopt, back);
         buttons.setAlignment(Pos.CENTER);
 
         // ROOT LAYOUT
