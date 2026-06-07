@@ -208,7 +208,7 @@ public class HomePage {
         });
 
         Scene scene =
-                new Scene(layout, 1100, 700);
+                new Scene(layout, 1000, 600);
 
         stage.setScene(scene);
         stage.setTitle("FurEver Friends - Home");
