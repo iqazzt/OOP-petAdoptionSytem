@@ -1,4 +1,3 @@
-package project2;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -11,6 +10,7 @@ package project2;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,21 +19,11 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class ManageApplication {
-
-    private Stage stage;
-    private PetOwner currentOwner;
-
-    // Constructor for integration — opened from navbar
-    public ManageApplication(PetOwner currentOwner) {
-        this.currentOwner = currentOwner;
-        this.stage = new Stage();
-    }
-    // Build and show the Manage Application screen
-    public void show() {
-        Stage primaryStage = this.stage;
+public class ManageApplication extends Application{
+    @Override
+    public void start(Stage primaryStage) {
  
-        // ── NAVIGATION BAR ─────────────────────────────────────
+        // navigation bar
         Label webname = new Label("FurEver Friends");
         webname.setFont(new Font("Arial", 15));
         webname.setStyle("-fx-font-weight: bold;");
@@ -44,7 +34,7 @@ public class ManageApplication {
         Button historyBtn = new Button("Application History");
         Button manageBtn = new Button("Manage Application");
  
-        // Highlight current page
+        // current page
         manageBtn.setStyle("-fx-background-color: black; -fx-text-fill: white;");
  
         Region navSpacer = new Region();
@@ -55,21 +45,21 @@ public class ManageApplication {
         navBar.setPadding(new Insets(15));
         navBar.setAlignment(Pos.CENTER_LEFT);
  
-        // ── TITLE ──────────────────────────────────────────────
+        // title
         Label title = new Label("Manage Application");
         title.setFont(new Font("Arial", 28));
  
-        // ── TABLE ─────────────────────────────────────────────
+        // table
         // We use a VBox to build rows manually so we can add
         // interactive Comment field + Approve/Reject buttons per row
  
-        // Table header
+        // table header
         HBox tableHeader = createHeader();
  
         VBox tableRows = new VBox(0);
         tableRows.setStyle("-fx-border-color: #cccccc; -fx-border-width: 1;");
  
-        // Load data from applications.txt
+        // load data from applications.txt
         List<String[]> applications = loadApplications();
  
         if (applications.isEmpty()) {
@@ -91,7 +81,7 @@ public class ManageApplication {
             "-fx-background-color: white;"
         );
  
-        // ── CENTER LAYOUT ──────────────────────────────────────
+        // center layout
         VBox centerBox = new VBox(20, title, tableBox);
         centerBox.setPadding(new Insets(30, 40, 40, 40));
         centerBox.setAlignment(Pos.TOP_CENTER);
@@ -100,37 +90,19 @@ public class ManageApplication {
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background-color: #f5f5f5; -fx-background: #f5f5f5;");
  
-        // ── ROOT LAYOUT ────────────────────────────────────────
+        // root layout
         BorderPane root = new BorderPane();
         root.setTop(navBar);
         root.setCenter(scrollPane);
         root.setStyle("-fx-background-color: #f5f5f5;");
  
         Scene scene = new Scene(root, 1200, 600);
-        stage.setTitle("Manage Application");
-        stage.setScene(scene);
-        stage.show();
-        
-        // ── Navbar actions ──
-        homeBtn.setOnAction(ex -> {
-            new HomePage(currentOwner).show();
-            stage.close();
-        });
-        myPetBtn.setOnAction(ex -> {
-            new MyPets(currentOwner).show();
-            stage.close();
-        });
-        historyBtn.setOnAction(ex -> {
-            new ApplicationHistory(currentOwner).show();
-            stage.close();
-        });
-        newAppBtn.setOnAction(ex -> {
-            new NewApplication(currentOwner).show();
-            stage.close();
-        });
+        primaryStage.setTitle("Manage Application");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
  
-    // ── Create Table Header ────────────────────────────────────
+    // create table header
     private HBox createHeader() {
         String headerStyle =
             "-fx-font-weight: bold; -fx-font-size: 13px;";
@@ -173,7 +145,7 @@ public class ManageApplication {
         return header;
     }
  
-    // ── Create a Table Row ─────────────────────────────────────
+    // create table row
     private HBox createRow(String[] app, VBox tableRows, List<String[]> applications) {
  
         // app format: [appId, applicantId, petId, email, description, status, date, comment]
@@ -203,12 +175,12 @@ public class ManageApplication {
         descLabel.setPrefWidth(200);
         descLabel.setWrapText(true);
  
-        // Comment text field
+        // comment text field
         TextField commentField = new TextField();
         commentField.setPromptText("Enter your comment here");
         commentField.setPrefWidth(180);
  
-        // Status label (shown after approve/reject)
+        // status label (shown after approve/reject)
         Label statusLabel = new Label(status);
         statusLabel.setFont(new Font("Arial", 12));
         if (status.equals("APPROVED")) {
@@ -217,7 +189,7 @@ public class ManageApplication {
             statusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
         }
  
-        // Approve Button
+        // approve button
         Button approveBtn = new Button("Approve");
         approveBtn.setStyle(
             "-fx-background-color: #4CAF50;" +
@@ -227,7 +199,7 @@ public class ManageApplication {
             "-fx-cursor: hand;"
         );
  
-        // Reject Button
+        // reject Button
         Button rejectBtn = new Button("Reject");
         rejectBtn.setStyle(
             "-fx-background-color: #e53935;" +
@@ -237,11 +209,11 @@ public class ManageApplication {
             "-fx-cursor: hand;"
         );
  
-        // Approve action
+        // approve action
         approveBtn.setOnAction(e -> {
             String comment = commentField.getText().trim();
             if (comment.isEmpty()) comment = "Approved";
-            FileHandler.updateApplication(appId, "APPROVED", comment);
+            updateApplication(appId, "APPROVED", comment);
             statusLabel.setText("APPROVED");
             statusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
             approveBtn.setDisable(true);
@@ -249,11 +221,11 @@ public class ManageApplication {
             showAlert("Application " + appId + " has been APPROVED.");
         });
  
-        // Reject action
+        // reject action
         rejectBtn.setOnAction(e -> {
             String comment = commentField.getText().trim();
             if (comment.isEmpty()) comment = "Rejected";
-            FileHandler.updateApplication(appId, "REJECTED", comment);
+            updateApplication(appId, "REJECTED", comment);
             statusLabel.setText("REJECTED");
             statusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
             approveBtn.setDisable(true);
@@ -261,7 +233,7 @@ public class ManageApplication {
             showAlert("Application " + appId + " has been REJECTED.");
         });
  
-        // Disable buttons if already decided
+        // disable buttons if already decided
         if (status.equals("APPROVED") || status.equals("REJECTED")) {
             approveBtn.setDisable(true);
             rejectBtn.setDisable(true);
@@ -281,24 +253,24 @@ public class ManageApplication {
         return row;
     }
  
-    // ── Load applications from file ────────────────────────────
+    // load applications from file 
     private List<String[]> loadApplications() {
         List<String[]> list = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("applications.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split("\\|"); // Fixed: applications.txt uses pipe delimiter
+                String[] parts = line.split(",");
                 if (parts.length >= 8) {
                     list.add(parts);
                 }
             }
         } catch (IOException e) {
-            // File not found — return empty list
+            // file not found — return empty list
         }
         return list;
     }
  
-    // ── Update application status in file ─────────────────────
+    //  update application status in file 
     private void updateApplication(String appId, String newStatus, String comment) {
         try {
             File file = new File("applications.txt");
@@ -306,12 +278,12 @@ public class ManageApplication {
             List<String> updatedLines = new ArrayList<>();
  
             for (String line : lines) {
-                String[] parts = line.split("\\|"); // Fixed: use pipe delimiter
+                String[] parts = line.split(",");
                 if (parts.length >= 8 && parts[0].equals(appId)) {
-                    // Update status (index 5) and comment (index 7)
+                    // update status (index 5) and comment (index 7)
                     parts[5] = newStatus;
                     parts[7] = comment;
-                    line = String.join("|", parts); // Fixed: rejoin with pipe
+                    line = String.join(",", parts);
                 }
                 updatedLines.add(line);
             }
@@ -323,10 +295,13 @@ public class ManageApplication {
         }
     }
  
-    // ── Show alert ─────────────────────────────────────────────
+    // show alert 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
         alert.showAndWait();
     }
  
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
