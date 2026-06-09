@@ -18,7 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-
+ 
 public class HomePageVisitor extends Application {
     @Override
     public void start(Stage primaryStage) {
@@ -48,6 +48,17 @@ public class HomePageVisitor extends Application {
             "-fx-padding: 8 20;" +
             "-fx-cursor: hand;"
         );
+ 
+        loginBtn.setOnAction(e -> {
+            login_register_page loginPage = new login_register_page(primaryStage);
+            try {
+                loginPage.getRegisterScene(); // pre-build register scene so the link works
+                primaryStage.setScene(loginPage.getLoginScene());
+                primaryStage.setTitle("FurEver Friends – Login");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
  
         Region navSpacer = new Region();
         HBox.setHgrow(navSpacer, Priority.ALWAYS);
