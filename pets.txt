@@ -1,6 +1,3 @@
-P001,Bobby,Cat,Persian,1,female,vaccinated,available,O001
-P002,Max,Dog,Labrador,2,male,vaccinated,available,O001
-P003,Luna,Rabbit,Holland Lop,1,female,healthy,available,O001
-P004,Mochi,Cat,Scottish Fold,3,male,vaccinated,available,O002
+P004,Mochi,Cat,Scottish Fold,3,male,vaccinated,adopted,O002
 P005,Rocky,Dog,German Shepherd,4,male,vaccinated,available,O002
 P006,Bella,Hamster,Syrian,1,female,healthy,available,O002
