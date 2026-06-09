@@ -1,4 +1,3 @@
-package project2;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -23,7 +22,7 @@ public class HomePageVisitor extends Application {
     @Override
     public void start(Stage primaryStage) {
  
-        // ── NAVIGATION BAR ─────────────────────────────────────
+        // ── navigation bar 
         Label webname = new Label("FurEver Friends");
         webname.setFont(new Font("Arial", 15));
         webname.setStyle("-fx-font-weight: bold;");
@@ -32,13 +31,13 @@ public class HomePageVisitor extends Application {
         Button faqBtn = new Button("FAQs");
         Button contactBtn = new Button("Contact Us");
  
-        // Style nav buttons (plain, no background)
+        // style naviigation button
         String navBtnStyle = "-fx-background-color: transparent; -fx-font-size: 13px; -fx-cursor: hand;";
         homeNavBtn.setStyle(navBtnStyle);
         faqBtn.setStyle(navBtnStyle);
         contactBtn.setStyle(navBtnStyle);
  
-        // Login button (black pill)
+        // login button
         Button loginBtn = new Button("LOGIN");
         loginBtn.setStyle(
             "-fx-background-color: black;" +
@@ -57,7 +56,7 @@ public class HomePageVisitor extends Application {
         navBar.setAlignment(Pos.CENTER_LEFT);
         navBar.setStyle("-fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;");
  
-        // ── WELCOME SECTION ────────────────────────────────────
+        // welcome
         Label welcomeTitle = new Label("WELCOME!");
         welcomeTitle.setFont(new Font("Arial", 38));
         welcomeTitle.setStyle("-fx-font-weight: bold;");
@@ -73,8 +72,7 @@ public class HomePageVisitor extends Application {
         VBox welcomeText = new VBox(8, welcomeTitle, welcomeSubtitle);
         welcomeText.setMaxWidth(400);
  
-        // ── HERO IMAGE PLACEHOLDER ─────────────────────────────
-        // Placeholder for hero image (person with cat)
+        // hero image
         Rectangle heroImage = new Rectangle(900, 280);
         heroImage.setFill(Color.web("#d9d9d9"));
         heroImage.setArcWidth(12);
@@ -90,12 +88,12 @@ public class HomePageVisitor extends Application {
         VBox welcomeSection = new VBox(20, welcomeText, heroPane);
         welcomeSection.setPadding(new Insets(30, 40, 10, 40));
  
-        // ── PET CATALOGUE SECTION ──────────────────────────────
+        // pet catalogue 
         Label catalogueTitle = new Label("Pet Catalogue");
         catalogueTitle.setFont(new Font("Arial", 28));
         catalogueTitle.setStyle("-fx-font-weight: bold;");
  
-        // Pet data (name, type, description)
+        // pet data 
         String[][] pets = {
             {"Sunny", "Duck", "A cheerful little duckling looking for a pond-side home."},
             {"Koko", "Monkey", "Playful and curious, loves bananas and cuddles."},
@@ -105,11 +103,11 @@ public class HomePageVisitor extends Application {
             {"Mango", "Cat", "Loves sunny spots and afternoon naps."}
         };
  
-        // Pet card colours (simulate different pet images)
+        // pet card colours
         String[] cardColors = {"#f5e642", "#c8a96e", "#f0c060",
                                "#e8e8e8", "#b0b0b0", "#f0a060"};
  
-        // Build grid of pet cards (3 columns)
+        // build grid 
         GridPane petGrid = new GridPane();
         petGrid.setHgap(20);
         petGrid.setVgap(20);
@@ -124,7 +122,7 @@ public class HomePageVisitor extends Application {
         VBox catalogueSection = new VBox(20, catalogueTitle, petGrid);
         catalogueSection.setPadding(new Insets(30, 40, 40, 40));
  
-        // ── FULL PAGE LAYOUT ───────────────────────────────────
+        // full page layout
         VBox pageContent = new VBox(0, welcomeSection, catalogueSection);
  
         ScrollPane scrollPane = new ScrollPane(pageContent);
@@ -140,26 +138,18 @@ public class HomePageVisitor extends Application {
         primaryStage.setTitle("FurEver Friends – Home");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        // Wire LOGIN button to open the real login/register page
-        loginBtn.setOnAction(e -> {
-            login_register_page loginPage = new login_register_page(primaryStage);
-            loginPage.getRegisterScene(); // pre-build register scene so the link works
-            primaryStage.setScene(loginPage.getLoginScene());
-            primaryStage.setTitle("FurEver Friends – Login");
-        });
     }
  
-    // ── Helper: Create a Pet Card ──────────────────────────────
+    // create pet card
     private VBox createPetCard(String name, String type, String description, String color) {
  
-        // Image placeholder (coloured box)
+        // image placeholder
         Rectangle imgBox = new Rectangle(240, 180);
         imgBox.setFill(Color.web(color));
         imgBox.setArcWidth(8);
         imgBox.setArcHeight(8);
  
-        // Emoji based on type
+        // emoji pet
         String emoji;
         if (type.equals("Cat")) {
             emoji = "🐱";
@@ -178,12 +168,12 @@ public class HomePageVisitor extends Application {
  
         StackPane imgPane = new StackPane(imgBox, emojiLabel);
  
-        // Pet name
+        // pet name
         Label nameLabel = new Label(name + " · " + type);
         nameLabel.setFont(new Font("Arial", 13));
         nameLabel.setStyle("-fx-font-weight: bold;");
  
-        // Description
+        // description
         Label descLabel = new Label(description);
         descLabel.setFont(new Font("Arial", 12));
         descLabel.setTextFill(Color.GRAY);
