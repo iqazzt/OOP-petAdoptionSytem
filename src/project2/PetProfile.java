@@ -65,7 +65,7 @@ public class PetProfile {
         grid.add(makeValue(pet.getName()),       1, 1);
 
         grid.add(new Label("Type:"),             0, 2); // renamed from "Species:"
-        grid.add(makeValue(pet.getSpecies()),    1, 2);
+        grid.add(makeValue(pet.getType()),    1, 2);
 
         grid.add(new Label("Breed:"),            0, 3);
         grid.add(makeValue(pet.getBreed()),      1, 3);

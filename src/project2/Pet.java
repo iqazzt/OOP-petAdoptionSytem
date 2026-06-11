@@ -7,7 +7,7 @@ package project2;
 public class Pet {
     private String petID;
     private String name;
-    private String species;   // "Type" in UI, stored as species in model
+    private String type;   //
     private String breed;
     private int age;
     private String gender;
@@ -17,12 +17,12 @@ public class Pet {
     private String imagePath; // path to uploaded image, empty string if none
 
     // Full constructor including imagePath
-    public Pet(String petID, String name, String species, String breed,
+    public Pet(String petID, String name, String type, String breed,
                int age, String gender, String healthStatus,
                String adoptionStatus, String ownerID, String imagePath) {
         this.petID         = petID;
         this.name          = name;
-        this.species       = species;
+        this.type       = type;
         this.breed         = breed;
         this.age           = age;
         this.gender        = gender;
@@ -33,17 +33,17 @@ public class Pet {
     }
 
     // Backward-compatible constructor (no imagePath — defaults to empty)
-    public Pet(String petID, String name, String species, String breed,
+    public Pet(String petID, String name, String type, String breed,
                int age, String gender, String healthStatus,
                String adoptionStatus, String ownerID) {
-        this(petID, name, species, breed, age, gender,
+        this(petID, name, type, breed, age, gender,
              healthStatus, adoptionStatus, ownerID, "");
     }
 
     // Getters
     public String getPetID()           { return petID; }
     public String getName()            { return name; }
-    public String getSpecies()         { return species; }
+    public String getType()         { return type; }
     public String getBreed()           { return breed; }
     public int    getAge()             { return age; }
     public String getGender()          { return gender; }
@@ -55,7 +55,7 @@ public class Pet {
     // Setters
     public void setPetID(String petID)                   { this.petID = petID; }
     public void setName(String name)                     { this.name = name; }
-    public void setSpecies(String species)               { this.species = species; }
+    public void setType(String type)               { this.type = type; }
     public void setBreed(String breed)                   { this.breed = breed; }
     public void setAge(int age)                          { this.age = age; }
     public void setGender(String gender)                 { this.gender = gender; }

@@ -287,7 +287,7 @@ public class HomePage {
         }
 
         String emoji = "🐾";
-        switch (pet.getSpecies().toLowerCase()) {
+        switch (pet.getType().toLowerCase()) {
             case "cat":     emoji = "🐱"; break;
             case "dog":     emoji = "🐶"; break;
             case "hamster": emoji = "🐹"; break;
@@ -298,7 +298,7 @@ public class HomePage {
         Label nameLbl = new Label(emoji + " " + pet.getName());
         nameLbl.setFont(Font.font("Arial", FontWeight.BOLD, 18));
 
-        Label speciesLbl = new Label("Type   : " + pet.getSpecies()); // renamed to Type
+        Label typeLbl = new Label("Type   : " + pet.getType()); // renamed to Type
         Label breedLbl   = new Label("Breed  : " + pet.getBreed());
         Label ageLbl     = new Label("Age    : " + pet.getAge() + " year(s)");
         Label genderLbl  = new Label("Gender : " + pet.getGender());
@@ -321,7 +321,7 @@ public class HomePage {
             new PetProfile(pet, currentOwner).show();
         });
 
-        card.getChildren().addAll(nameLbl, speciesLbl, breedLbl, ageLbl,
+        card.getChildren().addAll(nameLbl, typeLbl, breedLbl, ageLbl,
                                   genderLbl, statusLbl, viewBtn);
         return card;
     }

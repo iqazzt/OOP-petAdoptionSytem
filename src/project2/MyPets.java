@@ -157,10 +157,10 @@ public class MyPets {
                 new Label(pet.getName())
             );
 
-            VBox speciesBox = new VBox(5);
-            speciesBox.getChildren().addAll(
-                new Label("Species"),
-                new Label(pet.getSpecies())
+            VBox typeBox = new VBox(5);
+            typeBox.getChildren().addAll(
+                new Label("Type"),
+                new Label(pet.getType())
             );
 
             VBox breedBox = new VBox(5);
@@ -196,7 +196,7 @@ public class MyPets {
             petInfo.getChildren().addAll(
                 petIDBox,
                 nameBox,
-                speciesBox,
+                typeBox,
                 breedBox,
                 ageBox,
                 genderBox,
@@ -278,13 +278,13 @@ public class MyPets {
         
         //---prefill fields with current pet data
         TextField petNameTf = new TextField(pet.getName());
-        TextField speciesTf = new TextField(pet.getSpecies());
+        TextField typeTf = new TextField(pet.getType());
         TextField breedTf = new TextField(pet.getBreed());
         TextField ageTf = new TextField(String.valueOf(pet.getAge()));
         TextField healthStatusTf = new TextField(pet.getHealthStatus());
         
         petNameTf.setMaxWidth(200);
-        speciesTf.setMaxWidth(200);
+        typeTf.setMaxWidth(200);
         breedTf.setMaxWidth(200);
         ageTf.setMaxWidth(200);
         healthStatusTf.setMaxWidth(200);
@@ -327,8 +327,8 @@ public class MyPets {
         form.add(new Label("Name:"), 0, 1);
         form.add(petNameTf, 1, 1);
 
-        form.add(new Label("Species:"), 0, 2);
-        form.add(speciesTf, 1, 2);
+        form.add(new Label("Type:"), 0, 2);
+        form.add(typeTf, 1, 2);
 
         form.add(new Label("Breed:"), 0, 3);
         form.add(breedTf, 1, 3);
@@ -351,7 +351,7 @@ public class MyPets {
         saveBtn.setOnAction(e -> {
             // Update pet object with new values
             pet.setName(petNameTf.getText().trim());
-            pet.setSpecies(speciesTf.getText().trim());
+            pet.setType(typeTf.getText().trim());
             pet.setBreed(breedTf.getText().trim());
             pet.setAge(Integer.parseInt(ageTf.getText().trim()));
             pet.setGender(genderCb.getValue());

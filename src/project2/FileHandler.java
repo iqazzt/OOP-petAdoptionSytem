@@ -30,13 +30,13 @@ public class FileHandler {
     }
 
     // ── Save one pet (append) ─────────────────────────────────────
-    // Format: petID,name,species,breed,age,gender,healthStatus,adoptionStatus,ownerID,imagePath
+    // Format: petID,name,type,breed,age,gender,healthStatus,adoptionStatus,ownerID,imagePath
     public static void savePet(Pet pet) {
         try (FileWriter fw = new FileWriter("pets.txt", true)) {
             fw.write(
                 pet.getPetID()          + "," +
                 pet.getName()           + "," +
-                pet.getSpecies()        + "," +
+                pet.getType()        + "," +
                 pet.getBreed()          + "," +
                 pet.getAge()            + "," +
                 pet.getGender()         + "," +
@@ -57,7 +57,7 @@ public class FileHandler {
                 fw.write(
                     pet.getPetID()          + "," +
                     pet.getName()           + "," +
-                    pet.getSpecies()        + "," +
+                    pet.getType()        + "," +
                     pet.getBreed()          + "," +
                     pet.getAge()            + "," +
                     pet.getGender()         + "," +

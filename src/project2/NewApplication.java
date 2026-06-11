@@ -82,7 +82,7 @@ public class NewApplication {
 
         ComboBox<String> petDropdown = new ComboBox<>();
         for (Pet p : availablePets) {
-            petDropdown.getItems().add(p.getPetID() + " – " + p.getName() + " (" + p.getSpecies() + ")");
+            petDropdown.getItems().add(p.getPetID() + " – " + p.getName() + " (" + p.getType() + ")");
         }
         petDropdown.setPromptText("Choose a pet");
         petDropdown.setPrefWidth(500);
@@ -140,7 +140,7 @@ public class NewApplication {
                 return;
             }
 
-            // Extract the selected pet's ID from the dropdown label (format: "P101 – Name (Species)")
+            // Extract the selected pet's ID from the dropdown label (format: "P101 – Name (type)")
             String selectedLabel = petDropdown.getValue();
             String selectedPetId = selectedLabel.split(" – ")[0].trim();
 

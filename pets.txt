@@ -4,3 +4,4 @@ P103,Max,Dog,Siberian Husky,5,male,Healthy,available,USR7631,C:\Users\AFIQAH\Dow
 P104,Peanut,Hamster,Dwarf Hamster,1,female,Vaccinated,available,USR7631,C:\Users\AFIQAH\Downloads\download (1).jpg
 P105,Kiwi,Bird,Budgerigar,1,male,Healthy,available,USR6495,C:\Users\AFIQAH\Downloads\download (2).jpg
 P106,Daisy,Rabbit,Mini Rex,2,female,Healthy,available,USR6495,C:\Users\AFIQAH\Downloads\princess - francesca.jpg
+P107,Luna,Cat,British Shorthair,3,female,Vaccinated,available,USR7631,C:\Users\AFIQAH\Downloads\cat.jpg
