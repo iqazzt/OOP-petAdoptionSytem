@@ -2,6 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+package project2;
 
 /**
  *
@@ -51,9 +52,11 @@ public class HomePageVisitor extends Application {
         );
 
         loginBtn.setOnAction(e -> {
-            login_register_page loginPage = new login_register_page();
+            login_register_page loginPage = new login_register_page(primaryStage);
             try {
-                loginPage.start(primaryStage);
+                loginPage.getRegisterScene(); // pre-build register scene so the link works
+                primaryStage.setScene(loginPage.getLoginScene());
+                primaryStage.setTitle("FurEver Friends – Login");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
