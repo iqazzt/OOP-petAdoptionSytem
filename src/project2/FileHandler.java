@@ -14,56 +14,73 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileHandler {
-    
-    // Append one new pet
+
+    // ── Pet ID generator ──────────────────────────────────────────
+    // Counts existing pets and returns P101, P102, P103 ...
+    public static String generatePetId() {
+        int count = 101;
+        try (BufferedReader br = new BufferedReader(new FileReader("pets.txt"))) {
+            while (br.readLine() != null) {
+                count++;
+            }
+        } catch (IOException e) {
+            // File doesn't exist yet — start from P101
+        }
+        return "P" + count;
+    }
+
+    // ── Save one pet (append) ─────────────────────────────────────
+    // Format: petID,name,species,breed,age,gender,healthStatus,adoptionStatus,ownerID,imagePath
     public static void savePet(Pet pet) {
         try (FileWriter fw = new FileWriter("pets.txt", true)) {
             fw.write(
-                pet.getPetID()       + "," +
-                pet.getName()        + "," +
-                pet.getSpecies()     + "," +
-                pet.getBreed()       + "," +
-                pet.getAge()         + "," +
-                pet.getGender()      + "," +
-                pet.getHealthStatus()+ "," +
-                pet.getAdoptionStatus()        + "," +
-                pet.getOwnerID()     + "\n"
+                pet.getPetID()          + "," +
+                pet.getName()           + "," +
+                pet.getSpecies()        + "," +
+                pet.getBreed()          + "," +
+                pet.getAge()            + "," +
+                pet.getGender()         + "," +
+                pet.getHealthStatus()   + "," +
+                pet.getAdoptionStatus() + "," +
+                pet.getOwnerID()        + "," +
+                pet.getImagePath()      + "\n"
             );
         } catch (IOException e) {
             System.out.println("Error adding pet: " + e.getMessage());
         }
     }
 
-    // Overwrite entire file
+    // ── Save all pets (overwrite entire file) ─────────────────────
     public static void saveAllPets(ArrayList<Pet> petlist) {
         try (FileWriter fw = new FileWriter("pets.txt", false)) {
             for (Pet pet : petlist) {
                 fw.write(
-                    pet.getPetID()       + "," +
-                    pet.getName()        + "," +
-                    pet.getSpecies()     + "," +
-                    pet.getBreed()       + "," +
-                    pet.getAge()         + "," +
-                    pet.getGender()      + "," +
-                    pet.getHealthStatus()+ "," +
-                    pet.getAdoptionStatus()        + "," +
-                    pet.getOwnerID()     + "\n"
+                    pet.getPetID()          + "," +
+                    pet.getName()           + "," +
+                    pet.getSpecies()        + "," +
+                    pet.getBreed()          + "," +
+                    pet.getAge()            + "," +
+                    pet.getGender()         + "," +
+                    pet.getHealthStatus()   + "," +
+                    pet.getAdoptionStatus() + "," +
+                    pet.getOwnerID()        + "," +
+                    pet.getImagePath()      + "\n"
                 );
             }
         } catch (IOException e) {
             System.out.println("Error saving file: " + e.getMessage());
         }
     }
-    
-    // Save owner info (original — no password, kept for backward compatibility)
-    public static void saveOwner(PetOwner owner){
+
+    // ── Save owner (no password — backward compat) ────────────────
+    public static void saveOwner(PetOwner owner) {
         saveOwner(owner, "");
     }
 
-    // Save owner info WITH password — called by registration
+    // ── Save owner WITH password ──────────────────────────────────
     // Format: ownerID,name,email,password
-    public static void saveOwner(PetOwner owner, String password){
-        try (FileWriter fw = new FileWriter("owners.txt", true)){
+    public static void saveOwner(PetOwner owner, String password) {
+        try (FileWriter fw = new FileWriter("owners.txt", true)) {
             fw.write(
                 owner.getOwnerID()    + "," +
                 owner.getName()       + "," +
@@ -74,57 +91,54 @@ public class FileHandler {
             System.out.println("Error saving owner: " + e.getMessage());
         }
     }
-    
-    //load all pets
-    public static ArrayList<Pet> loadPets(){
+
+    // ── Load all pets ─────────────────────────────────────────────
+    // Handles both old format (9 fields) and new format (10 fields with imagePath)
+    public static ArrayList<Pet> loadPets() {
         ArrayList<Pet> petList = new ArrayList<>();
-        
-        try{
-            BufferedReader br = new BufferedReader(new FileReader("pets.txt"));
+        try (BufferedReader br = new BufferedReader(new FileReader("pets.txt"))) {
             String line;
-
-            while((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
+                if (data.length < 9) continue; // skip malformed lines
 
-                Pet pet = new Pet( data[0], 
-                        data[1],
-                        data[2],
-                        data[3],
-                        Integer.parseInt(data[4]),
-                        data[5],
-                        data[6],
-                        data[7],
-                        data[8]
+                String imagePath = (data.length >= 10) ? data[9] : ""; // optional 10th field
+
+                Pet pet = new Pet(
+                    data[0],
+                    data[1],
+                    data[2],
+                    data[3],
+                    Integer.parseInt(data[4]),
+                    data[5],
+                    data[6],
+                    data[7],
+                    data[8],
+                    imagePath
                 );
-                
                 petList.add(pet);
-            }  
-        }catch(IOException e){
+            }
+        } catch (IOException e) {
             System.out.println("Error loading pets: " + e.getMessage());
         }
-        
         return petList;
     }
-    
-    //load pets by owner
-    public static ArrayList<Pet> loadPetsByOwner(String ownerID){
+
+    // ── Load pets by owner ────────────────────────────────────────
+    public static ArrayList<Pet> loadPetsByOwner(String ownerID) {
         ArrayList<Pet> ownerPets = new ArrayList<>();
-        ArrayList<Pet> allPets = loadPets();
-        
-        for (Pet pet : allPets){
-            if (pet.getOwnerID().equals(ownerID)){
+        for (Pet pet : loadPets()) {
+            if (pet.getOwnerID().equals(ownerID)) {
                 ownerPets.add(pet);
             }
         }
-        
         return ownerPets;
     }
 
     // ── Application methods ───────────────────────────────────────
-    // All application data uses pipe (|) as delimiter
     // Format: appId|applicantId|petId|email|description|status|date|comment
 
-    // Generate a unique application ID (AP101, AP102, ...)
+    // Generate unique application ID: AP101, AP102 ...
     public static String generateApplicationId() {
         int count = 101;
         try (BufferedReader br = new BufferedReader(new FileReader("applications.txt"))) {
@@ -132,13 +146,12 @@ public class FileHandler {
                 count++;
             }
         } catch (IOException e) {
-            // File doesn't exist yet — start from AP101
+            // File doesn't exist yet
         }
         return "AP" + count;
     }
 
-    // Append one new application to applications.txt
-    // parts[]: appId|applicantId|petId|email|description|status|date|comment
+    // Append one application
     public static void saveApplication(String[] parts) {
         try (FileWriter fw = new FileWriter("applications.txt", true)) {
             fw.write(String.join("|", parts) + "\n");
@@ -147,7 +160,7 @@ public class FileHandler {
         }
     }
 
-    // Load all applications from applications.txt
+    // Load all applications
     public static List<String[]> loadApplications() {
         List<String[]> list = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("applications.txt"))) {
@@ -164,7 +177,7 @@ public class FileHandler {
         return list;
     }
 
-    // Update status and comment of an existing application by appId
+    // Update application status and comment by appId
     public static void updateApplication(String appId, String newStatus, String comment) {
         try {
             File file = new File("applications.txt");

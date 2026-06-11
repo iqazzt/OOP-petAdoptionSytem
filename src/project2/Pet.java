@@ -7,98 +7,60 @@ package project2;
 public class Pet {
     private String petID;
     private String name;
-    private String species;
+    private String species;   // "Type" in UI, stored as species in model
     private String breed;
     private int age;
     private String gender;
     private String healthStatus;
     private String adoptionStatus;
     private String ownerID;
+    private String imagePath; // path to uploaded image, empty string if none
 
+    // Full constructor including imagePath
     public Pet(String petID, String name, String species, String breed,
-               int age, String gender, String healthStatus, String adoptionStatus, String ownerID) {
-        this.petID = petID;
-        this.name = name;
-        this.species = species;
-        this.breed = breed;
-        this.age = age;
-        this.gender = gender;
-        this.healthStatus = healthStatus;
+               int age, String gender, String healthStatus,
+               String adoptionStatus, String ownerID, String imagePath) {
+        this.petID         = petID;
+        this.name          = name;
+        this.species       = species;
+        this.breed         = breed;
+        this.age           = age;
+        this.gender        = gender;
+        this.healthStatus  = healthStatus;
         this.adoptionStatus = adoptionStatus;
-        this.ownerID = ownerID;
-    }
-    
-    public String getPetID() {
-        return petID;
+        this.ownerID       = ownerID;
+        this.imagePath     = imagePath;
     }
 
-    public String getName() {
-        return name;
+    // Backward-compatible constructor (no imagePath — defaults to empty)
+    public Pet(String petID, String name, String species, String breed,
+               int age, String gender, String healthStatus,
+               String adoptionStatus, String ownerID) {
+        this(petID, name, species, breed, age, gender,
+             healthStatus, adoptionStatus, ownerID, "");
     }
 
-    public String getSpecies() {
-        return species;
-    }
+    // Getters
+    public String getPetID()           { return petID; }
+    public String getName()            { return name; }
+    public String getSpecies()         { return species; }
+    public String getBreed()           { return breed; }
+    public int    getAge()             { return age; }
+    public String getGender()          { return gender; }
+    public String getHealthStatus()    { return healthStatus; }
+    public String getAdoptionStatus()  { return adoptionStatus; }
+    public String getOwnerID()         { return ownerID; }
+    public String getImagePath()       { return imagePath; }
 
-    public String getBreed() {
-        return breed;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public String getHealthStatus() {
-        return healthStatus;
-    }
-
-    public String getAdoptionStatus() {
-        return adoptionStatus;
-    }
-    
-    public String getOwnerID() {
-        return ownerID;
-    }
-   
-    
-    public void setPetID(String petID) {
-        this.petID = petID;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSpecies(String species) {
-        this.species = species;
-    }
-
-    public void setBreed(String breed) {
-        this.breed = breed;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public void setHealthStatus(String healthStatus) {
-        this.healthStatus = healthStatus;
-    }
-
-    public void setAdoptionStatus(String adoptionStatus) {
-        this.adoptionStatus =  adoptionStatus;
-    }
-    
-    public void setOwnerID(String ownerID) {
-        this.ownerID = ownerID;
-    }
-   
+    // Setters
+    public void setPetID(String petID)                   { this.petID = petID; }
+    public void setName(String name)                     { this.name = name; }
+    public void setSpecies(String species)               { this.species = species; }
+    public void setBreed(String breed)                   { this.breed = breed; }
+    public void setAge(int age)                          { this.age = age; }
+    public void setGender(String gender)                 { this.gender = gender; }
+    public void setHealthStatus(String healthStatus)     { this.healthStatus = healthStatus; }
+    public void setAdoptionStatus(String adoptionStatus) { this.adoptionStatus = adoptionStatus; }
+    public void setOwnerID(String ownerID)               { this.ownerID = ownerID; }
+    public void setImagePath(String imagePath)           { this.imagePath = imagePath; }
 }

@@ -1,3 +1,2 @@
-O001,Ali,ali@email.com,pass123
-O002,Sara,sara@email.com,pass456
-hani06,hani06,hni@gmail.com,12345
+USR7631,afiqah,fqhzzt@gmail.com,pika
+USR6495,hani,hani@gmail.com,h4ni

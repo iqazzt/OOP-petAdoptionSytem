@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -17,7 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-
+import java.io.File;
 import java.util.ArrayList;
 
 public class HomePage {
@@ -267,106 +269,60 @@ public class HomePage {
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8,0,0,2);"
         );
 
+        // Show uploaded image if available, otherwise show emoji
+        if (pet.getImagePath() != null && !pet.getImagePath().isBlank()) {
+            try {
+                File imgFile = new File(pet.getImagePath());
+                if (imgFile.exists()) {
+                    Image image = new Image(imgFile.toURI().toString());
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitWidth(230);
+                    imageView.setFitHeight(150);
+                    imageView.setPreserveRatio(true);
+                    card.getChildren().add(imageView);
+                }
+            } catch (Exception ex) {
+                // Image failed to load — fall through to emoji
+            }
+        }
+
         String emoji = "🐾";
-
         switch (pet.getSpecies().toLowerCase()) {
-
-            case "cat":
-                emoji = "🐱";
-                break;
-
-            case "dog":
-                emoji = "🐶";
-                break;
-
-            case "hamster":
-                emoji = "🐹";
-                break;
-
-            case "rabbit":
-                emoji = "🐰";
-                break;
-
-            case "bird":
-                emoji = "🐦";
-                break;
-
-            case "fish":
-                emoji = "🐠";
-                break;
+            case "cat":     emoji = "🐱"; break;
+            case "dog":     emoji = "🐶"; break;
+            case "hamster": emoji = "🐹"; break;
+            case "rabbit":  emoji = "🐰"; break;
+            case "bird":    emoji = "🐦"; break;
         }
 
-        Label nameLbl =
-                new Label(emoji + " " + pet.getName());
+        Label nameLbl = new Label(emoji + " " + pet.getName());
+        nameLbl.setFont(Font.font("Arial", FontWeight.BOLD, 18));
 
-        nameLbl.setFont(
-                Font.font(
-                        "Arial",
-                        FontWeight.BOLD,
-                        18
-                )
-        );
+        Label speciesLbl = new Label("Type   : " + pet.getSpecies()); // renamed to Type
+        Label breedLbl   = new Label("Breed  : " + pet.getBreed());
+        Label ageLbl     = new Label("Age    : " + pet.getAge() + " year(s)");
+        Label genderLbl  = new Label("Gender : " + pet.getGender());
+        Label statusLbl  = new Label("Status : " + pet.getAdoptionStatus());
 
-        Label speciesLbl =
-                new Label("Species : " + pet.getSpecies());
-
-        Label breedLbl =
-                new Label("Breed : " + pet.getBreed());
-
-        Label ageLbl =
-                new Label("Age : "
-                        + pet.getAge()
-                        + " year(s)");
-
-        Label genderLbl =
-                new Label("Gender : "
-                        + pet.getGender());
-
-        Label statusLbl =
-                new Label("Status : "
-                        + pet.getAdoptionStatus());
-
-        if (pet.getAdoptionStatus()
-                .equalsIgnoreCase("available")) {
-
-            statusLbl.setStyle(
-                    "-fx-text-fill: green;" +
-                    "-fx-font-weight: bold;"
-            );
-
+        if (pet.getAdoptionStatus().equalsIgnoreCase("available")) {
+            statusLbl.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
         } else {
-
-            statusLbl.setStyle(
-                    "-fx-text-fill: gray;" +
-                    "-fx-font-weight: bold;"
-            );
+            statusLbl.setStyle("-fx-text-fill: gray; -fx-font-weight: bold;");
         }
 
-        Button viewBtn =
-                new Button("View Pet");
-
+        Button viewBtn = new Button("View Pet");
         viewBtn.setPrefWidth(220);
-
         viewBtn.setStyle(
                 "-fx-background-color: black;" +
                 "-fx-text-fill: white;" +
                 "-fx-background-radius: 5;"
         );
-
         viewBtn.setOnAction(e -> {
             new PetProfile(pet, currentOwner).show();
         });
 
-        card.getChildren().addAll(
-                nameLbl,
-                speciesLbl,
-                breedLbl,
-                ageLbl,
-                genderLbl,
-                statusLbl,
-                viewBtn
-        );
-
+        card.getChildren().addAll(nameLbl, speciesLbl, breedLbl, ageLbl,
+                                  genderLbl, statusLbl, viewBtn);
         return card;
     }
 }

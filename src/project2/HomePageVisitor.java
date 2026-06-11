@@ -199,8 +199,4 @@ public class HomePageVisitor extends Application {
 
         return card;
     }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

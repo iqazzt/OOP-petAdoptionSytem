@@ -69,8 +69,22 @@ public class ManageApplication {
         VBox tableRows = new VBox(0);
         tableRows.setStyle("-fx-border-color: #cccccc; -fx-border-width: 1;");
         
-        // Load data from applications.txt
-        List<String[]> applications = loadApplications();
+        //#####################################################
+        // Load only applications for pets owned by the logged-in user
+        ArrayList<Pet> myPets = FileHandler.loadPetsByOwner(currentOwner.getOwnerID());
+
+        List<String[]> allApplications = loadApplications();
+        List<String[]> applications = new ArrayList<>();
+        for (String[] app : allApplications) {
+            String appPetId = app[2]; // index 2 = petId
+            for (Pet pet : myPets) {
+                if (pet.getPetID().equals(appPetId)) {
+                    applications.add(app);
+                    break;
+                }
+            }
+        }
+        //####################################################
  
         if (applications.isEmpty()) {
             Label emptyLabel = new Label("No applications found.");

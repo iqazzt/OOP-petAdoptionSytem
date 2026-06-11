@@ -18,242 +18,262 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import java.io.File;
 
-public class AddPet{
-    
-    //---fields
+public class AddPet {
+
     private Stage stage;
     private PetOwner currentOwner;
-    
-    //---constructor
+
     public AddPet(PetOwner currentOwner) {
         this.currentOwner = currentOwner;
         stage = new Stage();
-        
+
         BorderPane layout = new BorderPane();
         VBox content = new VBox(20);
-        
-        //---navigation bar
+
+        //---navigation bar 
         HBox navbar = new HBox();
         navbar.setPadding(new Insets(25, 40, 25, 40));
         navbar.setAlignment(Pos.CENTER_LEFT);
-        
-        //left side
+
         Label webname = new Label("FurEver Friends");
         webname.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        
+
         HBox left = new HBox(webname);
         left.setAlignment(Pos.CENTER_LEFT);
-        
-        //right side (menu)
-        Label homeLbl = new Label("Home");
-        Label myPetLbl = new Label("My Pet");
-        Label newAppLbl = new Label("New Application");
-        Label appHistLbl = new Label("Application History");
+
+        Label homeLbl      = new Label("Home");
+        Label myPetLbl     = new Label("My Pet");
+        Label newAppLbl    = new Label("New Application");
+        Label appHistLbl   = new Label("Application History");
         Label manageAppLbl = new Label("Manage Application");
-        
-        String labelstyle = "-fx-text-fill: #000000;" + "-fx-underline: false;" + 
-                           "-fx-font-size: 14px;" + "-fx-cursor: hand;";
-        
+
+        String labelstyle = "-fx-text-fill: #000000;" +
+                            "-fx-underline: false;"   +
+                            "-fx-font-size: 14px;"    +
+                            "-fx-cursor: hand;";
+
         homeLbl.setStyle(labelstyle);
         myPetLbl.setStyle(labelstyle);
         newAppLbl.setStyle(labelstyle);
         appHistLbl.setStyle(labelstyle);
         manageAppLbl.setStyle(labelstyle);
-        
+
         HBox right = new HBox(25, homeLbl, myPetLbl, newAppLbl, appHistLbl, manageAppLbl);
         right.setAlignment(Pos.CENTER_RIGHT);
-        
+
         navbar.getChildren().addAll(left, right);
         HBox.setHgrow(right, Priority.ALWAYS);
         layout.setTop(navbar);
-      
+
         //---navigation events
-        homeLbl.setOnMouseClicked(e -> {
-            new HomePage(currentOwner).show();
-            stage.close();
-        });
-        
-        myPetLbl.setOnMouseClicked(e -> {
-            new MyPets(currentOwner).show();
-            stage.close();
-        });
-        
+        homeLbl.setOnMouseClicked(e -> { new HomePage(currentOwner).show(); stage.close(); });
+        myPetLbl.setOnMouseClicked(e -> { new MyPets(currentOwner).show(); stage.close(); });
+        newAppLbl.setOnMouseClicked(e -> { new NewApplication(currentOwner).show(); stage.close(); });
+        appHistLbl.setOnMouseClicked(e -> { new ApplicationHistory(currentOwner).show(); stage.close(); });
+        manageAppLbl.setOnMouseClicked(e -> { new ManageApplication(currentOwner).show(); stage.close(); });
 
-        newAppLbl.setOnMouseClicked(e -> {
-            new NewApplication(currentOwner).show();
-            stage.close();
-        });
-
-        appHistLbl.setOnMouseClicked(e -> {
-            new ApplicationHistory(currentOwner).show();
-            stage.close();
-        });
-
-        manageAppLbl.setOnMouseClicked(e -> {
-            new ManageApplication(currentOwner).show();
-            stage.close();
-        });
-        
-        //---content area
+        //---page title 
         Text title = new Text("Add Pet Application");
         title.setFont(Font.font("Tahoma", FontWeight.BOLD, 40));
-        
+
         HBox topRow = new HBox(30, title);
         topRow.setPadding(new Insets(30));
         navbar.setSpacing(20);
         topRow.setAlignment(Pos.CENTER);
-        
+
         HBox row = new HBox(50);
         row.setAlignment(Pos.CENTER);
         row.setPadding(new Insets(30));
-        
-        //---form
+
+        //---form fields 
         VBox petInfo = new VBox(15);
-        
-        //each row
-        HBox row1 = new HBox(10);
-        Label petID = new Label("Pet ID: ");
-        TextField petTf = new TextField();
-        petTf.setPromptText("e.g., P010");
-        row1.getChildren().addAll(petID, petTf);
-        petID.setMinWidth(120);
-        
+
+        // Pet Name
         HBox row2 = new HBox(10);
         Label petName = new Label("Pet Name: ");
+        petName.setMinWidth(120);
         TextField petNametf = new TextField();
         petNametf.setPromptText("e.g., Mikey");
         row2.getChildren().addAll(petName, petNametf);
-        petName.setMinWidth(120);
-     
+
+        // Type 
         HBox row3 = new HBox(10);
-        Label species = new Label("Species: ");
-        TextField speciesTf = new TextField();
-        speciesTf.setPromptText("e.g., Cat");
-        row3.getChildren().addAll(species, speciesTf);
-        species.setMinWidth(120);
-        
+        Label typeLbl = new Label("Type: ");
+        typeLbl.setMinWidth(120);
+        ComboBox<String> typeCb = new ComboBox<>();
+        typeCb.getItems().addAll("Cat", "Dog", "Rabbit", "Hamster", "Bird");
+        typeCb.setPromptText("Select type");
+        row3.getChildren().addAll(typeLbl, typeCb);
+
+        // Breed
         HBox row4 = new HBox(10);
         Label breed = new Label("Breed: ");
+        breed.setMinWidth(120);
         TextField breedTf = new TextField();
         breedTf.setPromptText("e.g., Persian");
         row4.getChildren().addAll(breed, breedTf);
-        breed.setMinWidth(120);
-        
+
+        // Age
         HBox row5 = new HBox(10);
         Label age = new Label("Age: ");
+        age.setMinWidth(120);
         TextField ageTf = new TextField();
         ageTf.setPromptText("e.g., 2");
         row5.getChildren().addAll(age, ageTf);
-        age.setMinWidth(120);
-        
+
+        // Gender
         HBox row6 = new HBox(10);
         Label gender = new Label("Gender: ");
+        gender.setMinWidth(120);
         ComboBox<String> genderCb = new ComboBox<>();
         genderCb.getItems().addAll("male", "female");
-        genderCb.setPromptText("select gender"); //show ai prompt
+        genderCb.setPromptText("Select gender");
         row6.getChildren().addAll(gender, genderCb);
-        gender.setMinWidth(120);
-        
+
+        // Health Status
         HBox row7 = new HBox(10);
         Label healthStatus = new Label("Health Status: ");
+        healthStatus.setMinWidth(120);
         TextField healthStatusTf = new TextField();
         healthStatusTf.setPromptText("e.g., Vaccinated");
         row7.getChildren().addAll(healthStatus, healthStatusTf);
-        healthStatus.setMinWidth(120);
-        
+
+        // Image Upload
         HBox row8 = new HBox(10);
-        Label adoptStatus = new Label("Adoption Status: ");
-        ComboBox<String> adoptCb = new ComboBox<>();
-        adoptCb.getItems().addAll("available", "adopted");
-        adoptCb.setPromptText("select status");
-        row8.getChildren().addAll(adoptStatus, adoptCb);
-        adoptStatus.setMinWidth(120);
-        
-        //---submit button
-        Button submitBtn = new Button("Submit");
-        HBox row11 = new HBox(10);
-        row11.getChildren().add(submitBtn);
-        
+        row8.setAlignment(Pos.CENTER_LEFT);
+        Label imageLbl = new Label("Pet Image: ");
+        imageLbl.setMinWidth(120);
+        Label imagePathLbl = new Label("No image selected");
+        imagePathLbl.setStyle("-fx-text-fill: gray; -fx-font-size: 11px;");
+        Button chooseImageBtn = new Button("Upload Image");
+        chooseImageBtn.setStyle(
+            "-fx-background-color: #e0e0e0;" +
+            "-fx-cursor: hand;" +
+            "-fx-background-radius: 4;"
+        );
+
+        //---stores the selected image path
+        final String[] selectedImagePath = {""};
+
+        chooseImageBtn.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Pet Image");
+            fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+            );
+            File selectedFile = fileChooser.showOpenDialog(stage);
+            if (selectedFile != null) {
+                selectedImagePath[0] = selectedFile.getAbsolutePath();
+                imagePathLbl.setText(selectedFile.getName());
+                imagePathLbl.setStyle("-fx-text-fill: green; -fx-font-size: 11px;");
+            }
+        });
+
+        row8.getChildren().addAll(imageLbl, chooseImageBtn, imagePathLbl);
+
+        //---message + Submit button 
         Label messageLbl = new Label();
         messageLbl.setVisible(false);
-        
+
+        Button submitBtn = new Button("Submit");
+
         submitBtn.setOnAction(e -> {
-            
-            //---validate (make sure nothing is empty)
-            if (petTf.getText().isBlank() || petNametf.getText().isBlank() || speciesTf.getText().isBlank() || breedTf.getText().isBlank() || ageTf.getText().isBlank() ||
-                    healthStatusTf.getText().isBlank() || genderCb.getValue() == null || adoptCb.getValue() == null ) {
-                
+            //---validation (image is optional)
+            if (petNametf.getText().isBlank() || typeCb.getValue() == null ||
+                breedTf.getText().isBlank()   || ageTf.getText().isBlank()  ||
+                genderCb.getValue() == null   || healthStatusTf.getText().isBlank()) {
+
                 messageLbl.setText("Please fill in all fields.");
+                messageLbl.setStyle("-fx-text-fill: red;");
                 messageLbl.setVisible(true);
                 return;
-            } 
-            
-            try{
+            }
+
+            try {
+                //---auto-generate Pet ID
+                String autoId = FileHandler.generatePetId();
+
                 Pet pet = new Pet(
-                    petTf.getText(),
+                    autoId,
                     petNametf.getText(),
-                    speciesTf.getText(),
+                    typeCb.getValue(),          
                     breedTf.getText(),
                     Integer.parseInt(ageTf.getText()),
                     genderCb.getValue(),
                     healthStatusTf.getText(),
-                    adoptCb.getValue(),
-                    currentOwner.getOwnerID()
+                    "available",                
+                    currentOwner.getOwnerID(),
+                    selectedImagePath[0]        
                 );
 
                 FileHandler.savePet(pet);
 
-                messageLbl.setText("Pet successfully added!");
+                messageLbl.setText("Pet successfully added! ID: " + autoId);
+                messageLbl.setStyle("-fx-text-fill: green;");
                 messageLbl.setVisible(true);
-                        
-            }catch(NumberFormatException ex){
-                messageLbl.setText("Age must be a number."); 
+
+                //---clear form
+                petNametf.clear();
+                typeCb.setValue(null);
+                breedTf.clear();
+                ageTf.clear();
+                genderCb.setValue(null);
+                healthStatusTf.clear();
+                selectedImagePath[0] = "";
+                imagePathLbl.setText("No image selected");
+                imagePathLbl.setStyle("-fx-text-fill: gray; -fx-font-size: 11px;");
+
+            } catch (NumberFormatException ex) {
+                messageLbl.setText("Age must be a number.");
+                messageLbl.setStyle("-fx-text-fill: red;");
                 messageLbl.setVisible(true);
             }
-    
         });
-        
-        petInfo.getChildren().addAll(row1, row2, row3, row4, row5,
-                                  row6, row7, row8, submitBtn, messageLbl);
-        
+
+        HBox row11 = new HBox(10);
+        row11.getChildren().add(submitBtn);
+
+        petInfo.getChildren().addAll(row2, row3, row4, row5, row6, row7, row8,
+                                     submitBtn, messageLbl);
+
         row.getChildren().add(petInfo);
         content.getChildren().add(row);
-                
+
         VBox card = new VBox();
         card.setPadding(new Insets(10));
         card.getChildren().addAll(topRow, content);
         layout.setCenter(card);
-        
-        //----styles
+
+        //---styles
         layout.setStyle("-fx-background-color: white;");
-        
+
         petInfo.setStyle(
             "-fx-background-color: #f9f9f9;" +
-            "-fx-border-color: #e0e0e0;" +
-            "-fx-border-radius: 8;" +
-            "-fx-background-radius: 8;" +
+            "-fx-border-color: #e0e0e0;"     +
+            "-fx-border-radius: 8;"          +
+            "-fx-background-radius: 8;"      +
             "-fx-padding: 20;"
         );
-        
+
         submitBtn.setStyle(
             "-fx-background-color: #2c3e50;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 8 24;" +
-            "-fx-background-radius: 6;" +
+            "-fx-text-fill: white;"          +
+            "-fx-font-weight: bold;"         +
+            "-fx-padding: 8 24;"             +
+            "-fx-background-radius: 6;"      +
             "-fx-cursor: hand;"
         );
- 
-        //---scene
-        Scene scene = new Scene(layout, 1000, 600);
+
+        Scene scene = new Scene(layout, 1000, 620);
         stage.setScene(scene);
         stage.setTitle("AddPet");
     }
-    
-    public void show(){
+
+    public void show() {
         stage.show();
     }
- 
 }
