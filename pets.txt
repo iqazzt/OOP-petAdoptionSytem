@@ -1,2 +1,6 @@
 P104,Mia,Cat,Persian,1,female,Vaccinated,available,USR7631,C:\Users\AFIQAH\Downloads\download.jpg
 P105,Mochi,Cat,Scottish Fold,3,male,Vaccinated,available,USR6495,C:\Users\AFIQAH\Downloads\Scottish Fold Cat 🩶🤎.jpg
+P103,Max,Dog,Siberian Husky,5,male,Healthy,available,USR7631,C:\Users\AFIQAH\Downloads\husky.jpg
+P104,Peanut,Hamster,Dwarf Hamster,1,female,Vaccinated,available,USR7631,C:\Users\AFIQAH\Downloads\download (1).jpg
+P105,Kiwi,Bird,Budgerigar,1,male,Healthy,available,USR6495,C:\Users\AFIQAH\Downloads\download (2).jpg
+P106,Daisy,Rabbit,Mini Rex,2,female,Healthy,available,USR6495,C:\Users\AFIQAH\Downloads\princess - francesca.jpg
