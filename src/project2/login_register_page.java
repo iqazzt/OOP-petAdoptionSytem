@@ -9,6 +9,7 @@ package project2;
  * @author HP
  */
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,36 +18,35 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Random;
 
 public class login_register_page {
     
-    private Stage window;
+    private final Stage window;
     private Scene loginScene, registerScene;
     
     public login_register_page(Stage stage) {
         this.window = stage;
+        createLoginScene();
+        createRegisterScene();
     }
     
-    //Return Login Scene
     public Scene getLoginScene() {
-
-        createLoginScene();
         return loginScene;
     }
    
-    //Return Register Scene
     public Scene getRegisterScene() {
-
-        createRegisterScene();
         return registerScene;
     }
     
     // screen login
     private void createLoginScene() {
-        
         HBox header = createHeader();
         
-        // primary login form
         VBox loginForm = new VBox(15);
         loginForm.setAlignment(Pos.CENTER);
         loginForm.setMaxWidth(400);
@@ -56,17 +56,16 @@ public class login_register_page {
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 26));
         titleLabel.setStyle("-fx-text-fill: #000000; -fx-padding: 0 0 20 0;");
         
-        // input userID
-        VBox idBox = new VBox(5);
-        Label idLabel = new Label("User ID");
-        idLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        TextField idField = new TextField();
-        idField.setPromptText("Enter your User ID");
-        idField.setPrefHeight(45);
-        idField.setStyle("-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-radius: 5px; -fx-background-radius: 5px;");
-        idBox.getChildren().addAll(idLabel, idField);
+        // login guna email
+        VBox emailBox = new VBox(5);
+        Label emailLabel = new Label("Email Address");
+        emailLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        TextField loginEmailField = new TextField(); 
+        loginEmailField.setPromptText("Enter your email");
+        loginEmailField.setPrefHeight(45);
+        loginEmailField.setStyle("-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-radius: 5px; -fx-background-radius: 5px;");
+        emailBox.getChildren().addAll(emailLabel, loginEmailField);
         
-        // password
         VBox passBox = new VBox(5);
         Label passLabel = new Label("Password");
         passLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
@@ -76,13 +75,11 @@ public class login_register_page {
         passField.setStyle("-fx-background-color: #F8F9FA; -fx-border-color: #E0E0E0; -fx-border-radius: 5px; -fx-background-radius: 5px;");
         passBox.getChildren().addAll(passLabel, passField);
         
-        // login button
         Button loginBtn = new Button("Login");
         loginBtn.setMaxWidth(Double.MAX_VALUE);
         loginBtn.setPrefHeight(45);
         loginBtn.setStyle("-fx-background-color: #FBC473; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 5px; -fx-cursor: hand;");
         
-        // link to register if no acc
         HBox registerBox = new HBox(5);
         registerBox.setAlignment(Pos.CENTER);
         Label newLabel = new Label("New to FurEver Friends?");
@@ -90,12 +87,13 @@ public class login_register_page {
         registerLink.setStyle("-fx-text-fill: #FBC473; -fx-underline: false; -fx-font-weight: bold;");
         registerBox.getChildren().addAll(newLabel, registerLink);
         
-        loginForm.getChildren().addAll(titleLabel, idBox, passBox, loginBtn, registerBox);
+        Label loginErrorLbl = new Label();
+        loginErrorLbl.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
         
-        // footer 
+        loginForm.getChildren().addAll(titleLabel, emailBox, passBox, loginBtn, registerBox, loginErrorLbl);
+        
         VBox footer = createFooter();
         
-        // layout guna borderpane
         BorderPane mainLayout = new BorderPane();
         mainLayout.setTop(header);
         mainLayout.setCenter(loginForm);
@@ -104,174 +102,183 @@ public class login_register_page {
         
         loginScene = new Scene(mainLayout, 850, 750);
         
-        // login interaction (change to register screen)
         registerLink.setOnAction(e -> window.setScene(registerScene));
         
-        // Error label: shown below the login button on failure
-        Label loginErrorLbl = new Label();
-        loginErrorLbl.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
-        loginForm.getChildren().add(loginErrorLbl);
-
-        // login button: validate against owners.txt, then open home
+        // check email and password
         loginBtn.setOnAction(e -> {
-            String uId   = idField.getText().trim();
+            String inputEmail = loginEmailField.getText().trim();
             String uPass = passField.getText().trim();
 
-            if (uId.isEmpty() || uPass.isEmpty()) { // if username atau pass empty, error
-                loginErrorLbl.setText("Please enter your User ID and Password.");
+            if (inputEmail.isEmpty() || uPass.isEmpty()) {
+                loginErrorLbl.setText("Please enter your Email and Password.");
                 return;
             }
 
-            // read owners.txt to find matching user
-            // format: ownerID,name,email,password
             PetOwner matchedOwner = null;
-            try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("owners.txt"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("owners.txt"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] parts = line.split(",");
-                    // parts[0]=ownerID, parts[1]=name, parts[2]=email, parts[3]=password
-                    if (parts.length >= 4 && parts[0].equals(uId) && parts[3].equals(uPass)) {
-                        matchedOwner = new PetOwner(parts[1], parts[0], parts[2]);
-                        break;
+                    // ownerID,name,email,password
+                    if (parts.length >= 4) {
+                        String fileEmail = parts[2].trim();
+                        String filePass = parts[3].trim();
+                        
+                        // validate using email only
+                        if (fileEmail.equalsIgnoreCase(inputEmail) && filePass.equals(uPass)) {
+                            matchedOwner = new PetOwner(parts[1], parts[0], fileEmail); 
+                            break;
+                        }
                     }
                 }
-            } catch (java.io.IOException ex) {
+            } catch (IOException ex) {
                 loginErrorLbl.setText("Could not read user data. Please try again.");
                 return;
             }
 
             if (matchedOwner != null) {
                 loginErrorLbl.setText("");
-                new HomePage(matchedOwner).show(); // Open the real home page
-                window.close();                    // Close login window
+                new HomePage(matchedOwner).show(); 
+                window.close();                    
             } else {
-                loginErrorLbl.setText("Invalid User ID or Password.");
+                loginErrorLbl.setText("Invalid Email or Password.");
             }
         });
     }
     
-    // screen register
+    // register screen
     private void createRegisterScene() {
-        
         HBox header = createHeader();
         
-        // primary register form
-        VBox registerForm = new VBox(15);
+        VBox registerForm = new VBox(12); 
         registerForm.setAlignment(Pos.CENTER);
         registerForm.setMaxWidth(450);
-        registerForm.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 10px; -fx-padding: 30px;");
+        registerForm.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 10px; -fx-padding: 25px;");
         
         Label titleLabel = new Label("Create an account");
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 28));
-        titleLabel.setStyle("-fx-text-fill: #000000;");
+        titleLabel.setStyle("-fx-text-fill: #000000; -fx-padding: 0 0 10 0;");
         
-        // input userID
-        VBox regIdBox = new VBox(5);
-        regIdBox.setAlignment(Pos.CENTER_LEFT);
-        Label regIdLabel = new Label("User ID:");
-        regIdLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        TextField regIdField = new TextField();
-        regIdField.setPrefHeight(40);
-        regIdField.setStyle("-fx-background-color: #EAEAEA; -fx-border-color: #CCCCCC;");
-        regIdBox.getChildren().addAll(regIdLabel, regIdField);
-        
-        // input register email
+        // full name
+        VBox nameBox = new VBox(5);
+        nameBox.setAlignment(Pos.CENTER_LEFT);
+        Label nameLabel = new Label("Full Name:");
+        nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        TextField nameField = new TextField();
+        nameField.setPromptText("Enter your full name");
+        nameField.setPrefHeight(40);
+        nameField.setStyle("-fx-background-color: #EAEAEA; -fx-border-color: #CCCCCC; -fx-background-radius: 4px; -fx-border-radius: 4px;");
+        nameBox.getChildren().addAll(nameLabel, nameField);
+
+        // email
         VBox emailBox = new VBox(5);
         emailBox.setAlignment(Pos.CENTER_LEFT);
         Label emailLabel = new Label("Email:");
         emailLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         TextField emailField = new TextField();
+        emailField.setPromptText("example@mail.com");
         emailField.setPrefHeight(40);
-        emailField.setStyle("-fx-background-color: #EAEAEA; -fx-border-color: #CCCCCC;");
+        emailField.setStyle("-fx-background-color: #EAEAEA; -fx-border-color: #CCCCCC; -fx-background-radius: 4px; -fx-border-radius: 4px;");
         emailBox.getChildren().addAll(emailLabel, emailField);
         
-        // input register password
+        // phone num
+        VBox phoneBox = new VBox(5);
+        phoneBox.setAlignment(Pos.CENTER_LEFT);
+        Label phoneLabel = new Label("Phone Number:");
+        phoneLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        TextField phoneField = new TextField();
+        phoneField.setPromptText("e.g. 0123456789");
+        phoneField.setPrefHeight(40);
+        phoneField.setStyle("-fx-background-color: #EAEAEA; -fx-border-color: #CCCCCC; -fx-background-radius: 4px; -fx-border-radius: 4px;");
+        phoneBox.getChildren().addAll(phoneLabel, phoneField);
+        
+        // password
         VBox regPassBox = new VBox(5);
         regPassBox.setAlignment(Pos.CENTER_LEFT);
         Label regPassLabel = new Label("Password:");
         regPassLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         PasswordField regPassField = new PasswordField();
+        regPassField.setPromptText("Create a password");
         regPassField.setPrefHeight(40);
-        regPassField.setStyle("-fx-background-color: #EAEAEA; -fx-border-color: #CCCCCC;");
+        regPassField.setStyle("-fx-background-color: #EAEAEA; -fx-border-color: #CCCCCC; -fx-background-radius: 4px; -fx-border-radius: 4px;");
         regPassBox.getChildren().addAll(regPassLabel, regPassField);
         
         Label welcomeLabel = new Label("Welcome to FurEver 🐈");
         welcomeLabel.setFont(Font.font("Arial", javafx.scene.text.FontWeight.NORMAL, javafx.scene.text.FontPosture.ITALIC, 14));
         
-        // button submit
-        Button submitBtn = new Button("Submit");
+        Button submitBtn = new Button("Register");
         submitBtn.setPrefWidth(120);
         submitBtn.setPrefHeight(35);
         submitBtn.setStyle("-fx-background-color: #FBC473; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5px; -fx-cursor: hand;");
         
-        registerForm.getChildren().addAll(titleLabel, regIdBox, emailBox, regPassBox, welcomeLabel, submitBtn);
+        Label regMessageLbl = new Label();
+        regMessageLbl.setStyle("-fx-font-size: 12px;");
+
+        registerForm.getChildren().addAll(titleLabel, nameBox, emailBox, phoneBox, regPassBox, welcomeLabel, submitBtn, regMessageLbl);
         
-        // use stackpane for background 
         StackPane centerContent = new StackPane();
-        centerContent.setPadding(new Insets(50, 0, 50, 0));
+        centerContent.setPadding(new Insets(35, 0, 35, 0));
         centerContent.setStyle("-fx-background-color: #FFFFFF;"); 
         centerContent.getChildren().add(registerForm);
         
-        // layout
         BorderPane mainLayout = new BorderPane();
         mainLayout.setTop(header);
         mainLayout.setCenter(centerContent);
         
         registerScene = new Scene(mainLayout, 850, 750);
-        
-        // error/success label shown under the submit button
-        Label regMessageLbl = new Label();
-        regMessageLbl.setStyle("-fx-font-size: 12px;");
-        registerForm.getChildren().add(regMessageLbl);
 
-        // Register interaction, validate then save to owners.txt
+        // register action
         submitBtn.setOnAction(e -> {
-            String regId    = regIdField.getText().trim();
+            String fullName = nameField.getText().trim();
             String email    = emailField.getText().trim();
+            String phone    = phoneField.getText().trim(); 
             String password = regPassField.getText().trim();
 
-            // basic validation
-            if (regId.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty()) {
                 regMessageLbl.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
                 regMessageLbl.setText("Please fill in all fields.");
                 return;
             }
 
-            // check if ID is already taken (read owners.txt)
-            try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("owners.txt"))) {
+            // check if email alr existed
+            try (BufferedReader br = new BufferedReader(new FileReader("owners.txt"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] parts = line.split(",");
-                    if (parts.length >= 1 && parts[0].equals(regId)) {
+                    if (parts.length >= 3 && parts[2].equalsIgnoreCase(email)) {
                         regMessageLbl.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
-                        regMessageLbl.setText("User ID already exists. Choose a different ID.");
+                        regMessageLbl.setText("Email is already registered. Use another email.");
                         return;
                     }
                 }
-            } catch (java.io.IOException ex) {
-                // owners.txt doesn't exist yet 
+            } catch (IOException ex) {
+                
             }
 
-            // save new owner: ownerID,name,email,password
-            // using the userID as both the ID and display name since the form only asks for ID
-            PetOwner newOwner = new PetOwner(regId, regId, email);
-            FileHandler.saveOwner(newOwner, password); // saves to owners.txt
+            // auto generated userID (USR + 4 random num)
+            String generatedId = "USR" + (1000 + new Random().nextInt(9000));
+            
+            // store new user format: ownerID, name, email, password
+            PetOwner newOwner = new PetOwner(fullName, generatedId, email);
+            FileHandler.saveOwner(newOwner, password); 
             
             regMessageLbl.setStyle("-fx-text-fill: green; -fx-font-size: 12px;");
-            regMessageLbl.setText("Account created! You can now log in.");
+            regMessageLbl.setText("Account created! Your User ID is: " + generatedId);
 
-            // go back to login after a short moment
-            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1.5));
+            // clear form
+            nameField.clear();
+            emailField.clear();
+            phoneField.clear();
+            regPassField.clear();
 
-            pause.setOnFinished(ev -> {
-                window.setScene(loginScene);
-            });
-
+            // redirect to login after 3 sec upon succesful registration
+            PauseTransition pause = new PauseTransition(Duration.seconds(3.0));
+            pause.setOnFinished(ev -> window.setScene(loginScene));
             pause.play();
         });
     }
     
-    // sync header style
+    // sync header and footer
     private HBox createHeader() {
         HBox header = new HBox(25);
         header.setPadding(new Insets(25, 40, 25, 40));
@@ -306,7 +313,6 @@ public class login_register_page {
         return header;
     }
     
-    // sync footer style
     private VBox createFooter() {
         VBox footerContainer = new VBox(10);
         footerContainer.setPadding(new Insets(30, 40, 30, 40));
@@ -319,7 +325,6 @@ public class login_register_page {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         
-        // grid for about, terms, address
         GridPane grid = new GridPane();
         grid.setHgap(40);
         grid.setVgap(5);
@@ -327,7 +332,6 @@ public class login_register_page {
         grid.add(new Label("Terms"), 1, 0);
         grid.add(new Label("Address"), 2, 0);
         
-        // temporary content - will change once decided
         for(int i=0; i<3; i++) {
             for(int j=1; j<=2; j++) {
                 Label pageLbl = new Label("Page");
