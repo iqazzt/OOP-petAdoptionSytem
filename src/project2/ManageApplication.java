@@ -68,7 +68,7 @@ public class ManageApplication {
  
         VBox tableRows = new VBox(0);
         tableRows.setStyle("-fx-border-color: #cccccc; -fx-border-width: 1;");
- 
+        
         // Load data from applications.txt
         List<String[]> applications = loadApplications();
  
