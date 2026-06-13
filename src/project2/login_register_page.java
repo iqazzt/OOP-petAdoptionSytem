@@ -126,7 +126,9 @@ public class login_register_page {
                         
                         // validate using email only
                         if (fileEmail.equalsIgnoreCase(inputEmail) && filePass.equals(uPass)) {
-                            matchedOwner = new PetOwner(parts[1], parts[0], fileEmail); 
+                            // read phone from index 4 if present (new format), default to empty for old records
+                            String filePhone = (parts.length >= 5) ? parts[4].trim() : "";
+                            matchedOwner = new PetOwner(parts[1], parts[0], fileEmail, filePhone, filePass);
                             break;
                         }
                     }
@@ -258,8 +260,8 @@ public class login_register_page {
             // auto generated userID (USR + 4 random num)
             String generatedId = "USR" + (1000 + new Random().nextInt(9000));
             
-            // store new user format: ownerID, name, email, password
-            PetOwner newOwner = new PetOwner(fullName, generatedId, email);
+            // store user format: ownerID, name, email, password, phone
+            PetOwner newOwner = new PetOwner(fullName, generatedId, email, phone, password);
             FileHandler.saveOwner(newOwner, password); 
             
             regMessageLbl.setStyle("-fx-text-fill: green; -fx-font-size: 12px;");

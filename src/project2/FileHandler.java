@@ -78,14 +78,15 @@ public class FileHandler {
     }
 
     // ── Save owner WITH password ──────────────────────────────────
-    // Format: ownerID,name,email,password
+    // Format: ownerID,name,email,password,phone
     public static void saveOwner(PetOwner owner, String password) {
         try (FileWriter fw = new FileWriter("owners.txt", true)) {
             fw.write(
                 owner.getOwnerID()    + "," +
                 owner.getName()       + "," +
                 owner.getOwnerEmail() + "," +
-                password              + "\n"
+                password              + "," +
+                owner.getPhoneNum()   + "\n"
             );
         } catch (IOException e) {
             System.out.println("Error saving owner: " + e.getMessage());

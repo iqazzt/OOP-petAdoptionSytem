@@ -69,7 +69,6 @@ public class ManageApplication {
         VBox tableRows = new VBox(0);
         tableRows.setStyle("-fx-border-color: #cccccc; -fx-border-width: 1;");
         
-        //#####################################################
         // Load only applications for pets owned by the logged-in user
         ArrayList<Pet> myPets = FileHandler.loadPetsByOwner(currentOwner.getOwnerID());
 
@@ -84,7 +83,6 @@ public class ManageApplication {
                 }
             }
         }
-        //####################################################
  
         if (applications.isEmpty()) {
             Label emptyLabel = new Label("No applications found.");

@@ -4,10 +4,6 @@
  */
 package project2;
 
-/**
- *
- * @author HP
- */
 public class Applicant extends User {
     
     private String status;

@@ -163,13 +163,24 @@ public class NewApplication {
             //--- generate submission date for each application ---
             String submissionDate = java.time.LocalDate.now().toString();
 
+            //--- create an Applicant object from the logged-in user's data ---
+            //--- Applicant extends User, demonstrating inheritance at the point of application submission ---
+            Applicant applicant = new Applicant(
+                currentOwner.getName(),
+                currentOwner.getOwnerID(),
+                currentOwner.getOwnerEmail(),
+                currentOwner.getPhoneNum(),
+                currentOwner.getPassword(),
+                "PENDING"   // initial application status
+            );
+
             String[] parts = {
                 applicationId,
-                currentOwner.getOwnerID(),
+                applicant.getUserID(),          // use Applicant object 
                 selectedPetId,
-                currentOwner.getOwnerEmail(), // email auto-filled from session
+                applicant.getEmail(),            // email auto-filled from session
                 desc,
-                "PENDING",
+                applicant.getStatus(),           // "PENDING" — from Applicant field
                 submissionDate,
                 "No comment"
             };
